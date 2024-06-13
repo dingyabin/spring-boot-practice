@@ -1,6 +1,7 @@
 
 package com.example.springsessiondemo.web;
 
+import com.example.springsessiondemo.annotation.HasPermit;
 import com.example.springsessiondemo.annotation.HasRole;
 import com.example.springsessiondemo.annotation.NoNeedLogin;
 import com.example.springsessiondemo.context.UserContext;
@@ -28,6 +29,7 @@ public class SpringSessionController {
         user.setName("xxx");
         user.setAge(10L);
         user.setRoles(Arrays.asList("admin", "dev"));
+        user.setPermits(Arrays.asList("read", "write"));
 
         httpServletRequest.getSession().setAttribute("user", user);
         return "ok";
@@ -35,6 +37,7 @@ public class SpringSessionController {
 
 
     @HasRole(hasRoles = {"admin", "boss"}, checkType = HasRole.HasRoleCheckType.HAS_ROLES_AND)
+    @HasPermit(hasPermit = {"read", "write"}, checkType = HasPermit.HasPermitCheckType.HAS_PERMIT_OR)
     @PostMapping(value = "/get")
     public User get() {
         User currentUser = UserContext.getCurrentUser();

@@ -35,6 +35,8 @@ public class User {
 
     private List<String> roles;
 
+    private List<String> permits;
+
 
     @Override
     public String toString() {

@@ -2,6 +2,7 @@ package com.example.springsessiondemo.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import com.example.springsessiondemo.intecepter.LoginCheckInterceptor;
+import com.example.springsessiondemo.intecepter.PermitCheckInterceptor;
 import com.example.springsessiondemo.intecepter.RoleCheckInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,6 +41,10 @@ public class SpringSessionConfig implements WebMvcConfigurer {
 
         RoleCheckInterceptor roleCheckInterceptor = new RoleCheckInterceptor();
         registry.addInterceptor(roleCheckInterceptor).addPathPatterns("/**").order(20);
+
+
+        PermitCheckInterceptor permitCheckInterceptor = new PermitCheckInterceptor();
+        registry.addInterceptor(permitCheckInterceptor).addPathPatterns("/**").order(21);
 
     }
 }
