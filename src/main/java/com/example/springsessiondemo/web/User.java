@@ -16,11 +16,17 @@
 
 package com.example.springsessiondemo.web;
 
+import com.alibaba.fastjson.JSONObject;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
+@Getter
+@Setter
 public class User {
 
     private String name;
@@ -29,35 +35,9 @@ public class User {
 
     private List<String> roles;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getAge() {
-        return age;
-    }
-
-    public void setAge(Long age) {
-        this.age = age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-    }
 
     @Override
     public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                '}';
+        return JSONObject.toJSONString(this);
     }
 }

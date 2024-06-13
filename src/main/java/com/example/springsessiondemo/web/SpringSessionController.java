@@ -1,6 +1,7 @@
 
 package com.example.springsessiondemo.web;
 
+import com.example.springsessiondemo.annotation.HasRole;
 import com.example.springsessiondemo.annotation.NoNeedLogin;
 import com.example.springsessiondemo.context.UserContext;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +34,7 @@ public class SpringSessionController {
     }
 
 
-
+    @HasRole(hasRoles = {"admin", "boss"}, checkType = HasRole.HasRoleCheckType.HAS_ROLES_AND)
     @PostMapping(value = "/get")
     public User get() {
         User currentUser = UserContext.getCurrentUser();
@@ -43,7 +44,6 @@ public class SpringSessionController {
         }
         return new User();
     }
-
 
 
     @NoNeedLogin
