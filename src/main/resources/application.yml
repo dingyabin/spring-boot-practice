@@ -13,3 +13,8 @@ spring:
       pool:
         enabled: true
         max-active: 10
+        min-idle: 5
+
+limiter:
+  redis:
+    enable: true

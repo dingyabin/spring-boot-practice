@@ -4,6 +4,7 @@ package com.example.springsessiondemo.web;
 import com.example.springsessiondemo.annotation.HasPermit;
 import com.example.springsessiondemo.annotation.HasRole;
 import com.example.springsessiondemo.annotation.NoNeedLogin;
+import com.example.springsessiondemo.config.limiter.RedisLimiterHelper;
 import com.example.springsessiondemo.context.UserContext;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
@@ -20,6 +22,10 @@ public class SpringSessionController {
 
     @Resource
     private HttpServletRequest httpServletRequest;
+
+
+    @Resource
+    private RedisLimiterHelper redisLimiterHelper;
 
 
     @NoNeedLogin
@@ -53,6 +59,14 @@ public class SpringSessionController {
     @PostMapping(value = "/noNeedLogin")
     public String testNoNeedLogin() {
         return "noNeedLogin ok";
+    }
+
+
+    @NoNeedLogin
+    @PostMapping(value = "/limit")
+    public String limit() {
+        boolean king = redisLimiterHelper.tryAcquire("king", 3, 30, TimeUnit.SECONDS);
+        return king +"";
     }
 
 }

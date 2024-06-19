@@ -1,4 +1,4 @@
-package com.example.springsessiondemo.config;
+package com.example.springsessiondemo.config.session;
 
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import com.example.springsessiondemo.intecepter.LoginCheckInterceptor;

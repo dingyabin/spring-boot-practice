@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "limiter.redis.enable",
+      "type": "java.lang.String",
+      "description": "开启redis限流."
+  }
+] }
