@@ -72,6 +72,9 @@
 
 
     <build>
+
+        <finalName>spring-session-demo</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
