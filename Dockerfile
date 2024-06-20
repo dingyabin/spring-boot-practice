@@ -8,4 +8,4 @@ COPY target/spring-session-demo.jar .
 
 EXPOSE 8080
 
-CMD java -jar spring-session-demo.jar
+CMD java -jar spring-session-demo.jar --spring.profiles.active=docker
