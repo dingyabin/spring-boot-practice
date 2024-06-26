@@ -1,11 +1,15 @@
 
 package com.example.springsessiondemo.web;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.example.springsessiondemo.annotation.HasPermit;
 import com.example.springsessiondemo.annotation.HasRole;
 import com.example.springsessiondemo.annotation.NoNeedLogin;
 import com.example.springsessiondemo.config.limiter.RedisLimiterHelper;
 import com.example.springsessiondemo.context.UserContext;
+import com.example.springsessiondemo.entity.SnowflakWorkerId;
+import com.example.springsessiondemo.mapper.SnowflakWorkerIdMapper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +30,9 @@ public class SpringSessionController {
 
     @Resource
     private RedisLimiterHelper redisLimiterHelper;
+
+    @Resource
+    private SnowflakWorkerIdMapper snowflakWorkerIdMapper;
 
 
     @NoNeedLogin
@@ -58,7 +65,9 @@ public class SpringSessionController {
     @NoNeedLogin
     @PostMapping(value = "/noNeedLogin")
     public String testNoNeedLogin() {
-        return "noNeedLogin ok";
+        LambdaQueryWrapper<SnowflakWorkerId> eq = Wrappers.lambdaQuery(SnowflakWorkerId.class).eq(SnowflakWorkerId::getIp, "192.168.0.114");
+        SnowflakWorkerId snowflakWorkerId = snowflakWorkerIdMapper.selectOne(eq);
+        return "noNeedLogin ok"+ snowflakWorkerId.toString();
     }
 
 
