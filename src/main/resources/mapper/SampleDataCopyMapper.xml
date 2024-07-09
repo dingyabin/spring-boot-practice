@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springsessiondemo.mapper.SampleDataCopyMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.springsessiondemo.entity.SampleDataCopy">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="family" column="family" jdbcType="VARCHAR"/>
+        <result property="parent" column="parent" jdbcType="VARCHAR"/>
+        <result property="mother" column="mother" jdbcType="VARCHAR"/>
+        <result property="date" column="date" jdbcType="TIMESTAMP"/>
+        <result property="versions" column="versions" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,`name`,family,
+        parent,mother,`date`,
+        versions
+    </sql>
+
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO
+            sample_data_copy  (name, family, parent, mother, date, versions)
+        VALUES
+        <foreach collection="list" item="data" separator=",">
+            (#{data.name}, #{data.family},#{data.parent},#{data.mother},#{data.date},#{data.versions})
+        </foreach>
+    </insert>
+
+</mapper>

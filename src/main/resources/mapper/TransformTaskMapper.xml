@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springsessiondemo.mapper.TransformTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.springsessiondemo.entity.TransformTask">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="startId" column="start_id" jdbcType="BIGINT"/>
+            <result property="size" column="size" jdbcType="BIGINT"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, start_id, size,
+        `status`
+    </sql>
+</mapper>
