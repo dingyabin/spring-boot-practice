@@ -18,6 +18,7 @@
 
     <modules>
         <module>spring-session</module>
+        <module>prometheus-demo</module>
     </modules>
 
 
