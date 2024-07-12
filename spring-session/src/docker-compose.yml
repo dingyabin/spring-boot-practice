@@ -11,7 +11,7 @@ services:
       - my_network
   spring-session-demo:
     build:
-      context: .  # Dockerfile所在的目录
+      context: ../..  # Dockerfile所在的目录
       dockerfile: Dockerfile  # Dockerfile的名称，如果不在当前目录或名为Dockerfile则需要指定
     ports:
       - "8080:8080"  # 映射端口，宿主机的5000端口映射到容器的8000端口

@@ -1,4 +1,4 @@
-package com.example.springsessiondemo.service.impl;
+package com.example.springsessiondemo.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.springsessiondemo.entity.SnowflakWorkerId;
