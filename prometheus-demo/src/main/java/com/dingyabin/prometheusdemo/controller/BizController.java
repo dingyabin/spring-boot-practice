@@ -17,4 +17,16 @@ public class BizController {
         return "ok";
     }
 
+
+    @RequestMapping("bad")
+    public String bizBad() throws InterruptedException {
+        while (true){
+            if (false){
+                break;
+            }
+        }
+        return "ok";
+    }
+
+
 }
