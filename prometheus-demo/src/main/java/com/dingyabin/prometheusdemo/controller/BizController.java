@@ -1,6 +1,7 @@
 package com.dingyabin.prometheusdemo.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -13,7 +14,10 @@ public class BizController {
 
 
     @RequestMapping("biz")
-    public String biz() {
+    public String biz(@RequestParam(value = "param", required = false) String param) {
+        if ("1".equals(param)){
+            throw new RuntimeException();
+        }
         return "ok";
     }
 
