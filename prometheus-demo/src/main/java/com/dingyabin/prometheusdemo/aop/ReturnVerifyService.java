@@ -31,6 +31,12 @@ public class ReturnVerifyService implements InitializingBean {
     }
 
 
+    /**
+     * 校验方法是否执行成功
+     * @param retCheckKey 校验key
+     * @param returnValue 方法的返回值
+     * @return 是否执行成功
+     */
     public boolean retVerify(String retCheckKey, Object returnValue) {
         Predicate<Object> fun = VERIFY_MAP.get(retCheckKey);
         if (fun == null) {
