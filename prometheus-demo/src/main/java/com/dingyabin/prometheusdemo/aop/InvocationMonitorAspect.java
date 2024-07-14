@@ -3,6 +3,7 @@ package com.dingyabin.prometheusdemo.aop;
 import com.dingyabin.prometheusdemo.aop.enums.MonitorReportType;
 import com.dingyabin.prometheusdemo.aop.model.InvocationModel;
 import com.dingyabin.prometheusdemo.service.InvocationMonitorService;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
  * Date: 2024/7/14.
  * Time:11:06
  */
+@Slf4j
 @Service
 @Aspect
 public class InvocationMonitorAspect {
@@ -29,8 +31,6 @@ public class InvocationMonitorAspect {
 
     @Around("@annotation(monitorReport)")
     public Object monitorReport(ProceedingJoinPoint joinPoint, MonitorReport monitorReport) throws Throwable {
-        InvocationModel invocationModel = new InvocationModel(joinPoint, monitorReport);
-        MonitorReportType reportType = monitorReport.value();
         long startTime = System.currentTimeMillis();
         boolean success = false;
         Object proceed = null;
@@ -39,19 +39,34 @@ public class InvocationMonitorAspect {
             success = true;
             return proceed;
         } finally {
-            if (reportType == MonitorReportType.COUNTER) {
-                invocationMonitorService.counterIncr(invocationModel);
-            } else if (reportType == MonitorReportType.COUNTER_WITH_RES) {
-                //获取校验key
-                String retCheckKey = monitorReport.retCheckKey();
-                if (!StringUtils.hasLength(retCheckKey)) {
-                    retCheckKey = monitorReport.name();
+            extracted(monitorReport, new InvocationModel(joinPoint, monitorReport), startTime, success, proceed);
+        }
+    }
+
+
+    private void extracted(MonitorReport monitorReport, InvocationModel invocationModel, long startTime, boolean success, Object proceed) {
+        try {
+            for (MonitorReportType reportType : monitorReport.value()) {
+                if (reportType == MonitorReportType.COUNTER) {
+                    invocationMonitorService.counterIncr(invocationModel);
+                    continue;
                 }
-                success = success && verifyService.retVerify(retCheckKey, proceed);
-                invocationMonitorService.counterWithRetIncr(invocationModel, success);
-            } else if (reportType == MonitorReportType.DURATION_SUMMARY) {
-                invocationMonitorService.timerDuration(invocationModel, (System.currentTimeMillis() - startTime));
+                if (reportType == MonitorReportType.DURATION_SUMMARY) {
+                    invocationMonitorService.timerDuration(invocationModel, (System.currentTimeMillis() - startTime));
+                    continue;
+                }
+                if (reportType == MonitorReportType.COUNTER_WITH_RES) {
+                    //获取校验key
+                    String retCheckKey = monitorReport.resVerifyKey();
+                    if (!StringUtils.hasLength(retCheckKey)) {
+                        retCheckKey = monitorReport.name();
+                    }
+                    success = success && verifyService.retVerify(retCheckKey, proceed);
+                    invocationMonitorService.counterWithRetIncr(invocationModel, success);
+                }
             }
+        } catch (Exception e) {
+            log.error("上报数据异常....", e);
         }
     }
 

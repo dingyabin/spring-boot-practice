@@ -17,7 +17,7 @@ public @interface MonitorReport {
 
     String name();
 
-    MonitorReportType value();
+    MonitorReportType[] value();
 
     /**
      * 如果value选择了MonitorReportType.COUNTER_WITH_RES
@@ -27,6 +27,6 @@ public @interface MonitorReport {
      *
      * @return key
      */
-    String retCheckKey() default "";
+    String resVerifyKey() default "";
 
 }

@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import static com.dingyabin.prometheusdemo.aop.ReturnVerifyService.STR_NOT_NULL;
 import static com.dingyabin.prometheusdemo.aop.enums.MonitorReportType.COUNTER_WITH_RES;
+import static com.dingyabin.prometheusdemo.aop.enums.MonitorReportType.DURATION_SUMMARY;
 
 /**
  * @author Administrator
@@ -25,7 +26,7 @@ public class BizController {
     private InvocationMonitorService invocationMonitorService;
 
 
-    @MonitorReport(name = "biz_Test_with_ret", value = COUNTER_WITH_RES, retCheckKey = STR_NOT_NULL)
+    @MonitorReport(name = "biz_controller", value = {COUNTER_WITH_RES, DURATION_SUMMARY}, resVerifyKey = STR_NOT_NULL)
     @RequestMapping("biz")
     public String biz(@RequestParam(value = "param", required = false) String param) {
         if ("1".equals(param)) {
@@ -55,7 +56,7 @@ public class BizController {
 
     @RequestMapping("test2")
     public String test2() {
-        invocationMonitorService.counterIncr("thisTestCounter2", "signature", "BizController-test");
+        invocationMonitorService.timerDuration("biz_Test_with_ret", 100 );
         return "ok";
     }
 
