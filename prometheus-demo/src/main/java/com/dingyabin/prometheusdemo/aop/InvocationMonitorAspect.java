@@ -20,12 +20,11 @@ import javax.annotation.Resource;
 @Aspect
 public class InvocationMonitorAspect {
 
-
     @Resource
     private InvocationMonitorService invocationMonitorService;
 
     @Resource
-    private ReturnCheckService returnCheckService;
+    private ReturnVerifyService verifyService;
 
 
     @Around("@annotation(monitorReport)")
@@ -48,7 +47,7 @@ public class InvocationMonitorAspect {
                 if (!StringUtils.hasLength(retCheckKey)) {
                     retCheckKey = monitorReport.name();
                 }
-                success = success && returnCheckService.retVerify(retCheckKey, proceed);
+                success = success && verifyService.retVerify(retCheckKey, proceed);
                 invocationMonitorService.counterWithRetIncr(invocationModel, success);
             } else if (reportType == MonitorReportType.DURATION_SUMMARY) {
                 invocationMonitorService.timerDuration(invocationModel, (System.currentTimeMillis() - startTime));

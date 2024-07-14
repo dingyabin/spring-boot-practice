@@ -1,7 +1,6 @@
 package com.dingyabin.prometheusdemo.controller;
 
 import com.dingyabin.prometheusdemo.aop.MonitorReport;
-import com.dingyabin.prometheusdemo.aop.ReturnCheckService;
 import com.dingyabin.prometheusdemo.aop.enums.MonitorReportType;
 import com.dingyabin.prometheusdemo.service.InvocationMonitorService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-import static com.dingyabin.prometheusdemo.aop.ReturnCheckService.STR_NOT_NULL;
+import static com.dingyabin.prometheusdemo.aop.ReturnVerifyService.STR_NOT_NULL;
 import static com.dingyabin.prometheusdemo.aop.enums.MonitorReportType.COUNTER_WITH_RES;
 
 /**
@@ -52,7 +51,6 @@ public class BizController {
     public String test11() {
         return "ok";
     }
-
 
 
     @RequestMapping("test2")

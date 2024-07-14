@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  * Time:23:44
  */
 @Service
-public class ReturnCheckService implements InitializingBean {
+public class ReturnVerifyService implements InitializingBean {
 
     public static final String OBJECT_NOT_NULL = "OBJECT_NOT_NULL";
 
