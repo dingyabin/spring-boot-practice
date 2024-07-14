@@ -1,6 +1,7 @@
 package com.dingyabin.prometheusdemo.controller;
 
 import com.dingyabin.prometheusdemo.aop.MonitorReport;
+import com.dingyabin.prometheusdemo.aop.ReturnCheckService;
 import com.dingyabin.prometheusdemo.aop.enums.MonitorReportType;
 import com.dingyabin.prometheusdemo.service.InvocationMonitorService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+
+import static com.dingyabin.prometheusdemo.aop.ReturnCheckService.STR_NOT_NULL;
+import static com.dingyabin.prometheusdemo.aop.enums.MonitorReportType.COUNTER_WITH_RES;
 
 /**
  * @author Administrator
@@ -22,7 +26,7 @@ public class BizController {
     private InvocationMonitorService invocationMonitorService;
 
 
-    @MonitorReport(name = "biz_Test_with_ret", value = MonitorReportType.COUNTER_WITH_RES)
+    @MonitorReport(name = "biz_Test_with_ret", value = COUNTER_WITH_RES, retCheckKey = STR_NOT_NULL)
     @RequestMapping("biz")
     public String biz(@RequestParam(value = "param", required = false) String param) {
         if ("1".equals(param)) {

@@ -7,6 +7,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
@@ -23,6 +24,9 @@ public class InvocationMonitorAspect {
     @Resource
     private InvocationMonitorService invocationMonitorService;
 
+    @Resource
+    private ReturnCheckService returnCheckService;
+
 
     @Around("@annotation(monitorReport)")
     public Object monitorReport(ProceedingJoinPoint joinPoint, MonitorReport monitorReport) throws Throwable {
@@ -30,18 +34,23 @@ public class InvocationMonitorAspect {
         MonitorReportType reportType = monitorReport.value();
         long startTime = System.currentTimeMillis();
         boolean success = false;
+        Object proceed = null;
         try {
-            Object proceed = joinPoint.proceed();
+            proceed = joinPoint.proceed();
             success = true;
             return proceed;
         } finally {
             if (reportType == MonitorReportType.COUNTER) {
                 invocationMonitorService.counterIncr(invocationModel);
-            }
-            else if (reportType == MonitorReportType.COUNTER_WITH_RES) {
+            } else if (reportType == MonitorReportType.COUNTER_WITH_RES) {
+                //获取校验key
+                String retCheckKey = monitorReport.retCheckKey();
+                if (!StringUtils.hasLength(retCheckKey)) {
+                    retCheckKey = monitorReport.name();
+                }
+                success = success && returnCheckService.retVerify(retCheckKey, proceed);
                 invocationMonitorService.counterWithRetIncr(invocationModel, success);
-            }
-            else if (reportType == MonitorReportType.DURATION_SUMMARY) {
+            } else if (reportType == MonitorReportType.DURATION_SUMMARY) {
                 invocationMonitorService.timerDuration(invocationModel, (System.currentTimeMillis() - startTime));
             }
         }
