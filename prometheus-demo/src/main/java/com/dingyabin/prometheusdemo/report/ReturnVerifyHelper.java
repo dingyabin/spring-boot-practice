@@ -2,9 +2,9 @@ package com.dingyabin.prometheusdemo.report;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 /**
@@ -18,7 +18,7 @@ public class ReturnVerifyHelper {
 
     public static final String STR_NOT_NULL = "STR_NOT_NULL";
 
-    private final static Map<String, Predicate<Object>> VERIFY_MAP = new HashMap<>();
+    private final static Map<String, Predicate<Object>> VERIFY_MAP = new ConcurrentHashMap<>();
 
     private ReturnVerifyHelper() {
     }
