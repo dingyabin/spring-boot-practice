@@ -1,8 +1,6 @@
-package com.dingyabin.prometheusdemo.aop;
+package com.dingyabin.prometheusdemo.report;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;

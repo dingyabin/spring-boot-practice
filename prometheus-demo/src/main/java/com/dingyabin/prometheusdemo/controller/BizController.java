@@ -1,7 +1,7 @@
 package com.dingyabin.prometheusdemo.controller;
 
-import com.dingyabin.prometheusdemo.aop.MonitorReport;
-import com.dingyabin.prometheusdemo.aop.enums.MonitorReportType;
+import com.dingyabin.prometheusdemo.report.aop.MonitorReport;
+import com.dingyabin.prometheusdemo.report.enums.MonitorReportType;
 import com.dingyabin.prometheusdemo.service.InvocationMonitorService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-import static com.dingyabin.prometheusdemo.aop.ReturnVerifyHelper.STR_NOT_NULL;
-import static com.dingyabin.prometheusdemo.aop.enums.MonitorReportType.COUNTER_WITH_RES;
-import static com.dingyabin.prometheusdemo.aop.enums.MonitorReportType.DURATION_SUMMARY;
+import static com.dingyabin.prometheusdemo.report.ReturnVerifyHelper.STR_NOT_NULL;
+import static com.dingyabin.prometheusdemo.report.enums.MonitorReportType.COUNTER_WITH_RES;
+import static com.dingyabin.prometheusdemo.report.enums.MonitorReportType.DURATION_SUMMARY;
 
 /**
  * @author Administrator

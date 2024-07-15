@@ -1,6 +1,6 @@
-package com.dingyabin.prometheusdemo.aop.model;
+package com.dingyabin.prometheusdemo.report.model;
 
-import com.dingyabin.prometheusdemo.aop.MonitorReport;
+import com.dingyabin.prometheusdemo.report.aop.MonitorReport;
 import lombok.Getter;
 import lombok.Setter;
 import org.aspectj.lang.ProceedingJoinPoint;

@@ -1,7 +1,7 @@
-package com.dingyabin.prometheusdemo.aop.enums;
+package com.dingyabin.prometheusdemo.report.enums;
 
-import com.dingyabin.prometheusdemo.aop.ReturnVerifyHelper;
-import com.dingyabin.prometheusdemo.aop.model.InvocationModel;
+import com.dingyabin.prometheusdemo.report.ReturnVerifyHelper;
+import com.dingyabin.prometheusdemo.report.model.InvocationModel;
 import com.dingyabin.prometheusdemo.service.InvocationMonitorService;
 import org.springframework.util.StringUtils;
 

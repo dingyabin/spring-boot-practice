@@ -1,6 +1,6 @@
 package com.dingyabin.prometheusdemo.service;
 
-import com.dingyabin.prometheusdemo.aop.model.InvocationModel;
+import com.dingyabin.prometheusdemo.report.model.InvocationModel;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
