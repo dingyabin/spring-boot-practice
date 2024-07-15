@@ -39,12 +39,12 @@ public class InvocationMonitorAspect {
             success = true;
             return proceed;
         } finally {
-            extracted(monitorReport, new InvocationModel(joinPoint, monitorReport), startTime, success, proceed);
+            submitReport(monitorReport, new InvocationModel(joinPoint, monitorReport), startTime, success, proceed);
         }
     }
 
 
-    private void extracted(MonitorReport monitorReport, InvocationModel invocationModel, long startTime, boolean success, Object proceed) {
+    private void submitReport(MonitorReport monitorReport, InvocationModel invocationModel, long startTime, boolean success, Object proceed) {
         try {
             for (MonitorReportType reportType : monitorReport.value()) {
                 if (reportType == MonitorReportType.COUNTER) {
