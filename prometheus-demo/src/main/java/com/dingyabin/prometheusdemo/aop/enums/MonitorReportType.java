@@ -1,6 +1,6 @@
 package com.dingyabin.prometheusdemo.aop.enums;
 
-import com.dingyabin.prometheusdemo.aop.ReturnVerifyHandler;
+import com.dingyabin.prometheusdemo.aop.ReturnVerifyHelper;
 import com.dingyabin.prometheusdemo.aop.model.InvocationModel;
 import com.dingyabin.prometheusdemo.service.InvocationMonitorService;
 import org.springframework.util.StringUtils;
@@ -29,7 +29,7 @@ public enum MonitorReportType {
                 resVerifyKey = model.getMonitorReport().name();
             }
             //校验结果是否符合预期
-            boolean success = model.isSuccess() && ReturnVerifyHandler.retVerify(resVerifyKey, model.getResult());
+            boolean success = model.isSuccess() && ReturnVerifyHelper.retVerify(resVerifyKey, model.getResult());
             monitorService.counterWithRetIncr(model, success);
         }
     },

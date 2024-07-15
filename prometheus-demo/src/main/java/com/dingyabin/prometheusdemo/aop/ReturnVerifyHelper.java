@@ -14,7 +14,7 @@ import java.util.function.Predicate;
  * Date: 2024/7/14.
  * Time:23:44
  */
-public class ReturnVerifyHandler {
+public class ReturnVerifyHelper {
 
     public static final String OBJECT_NOT_NULL = "OBJECT_NOT_NULL";
 

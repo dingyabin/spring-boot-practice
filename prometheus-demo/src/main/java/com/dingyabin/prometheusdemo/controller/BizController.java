@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-import static com.dingyabin.prometheusdemo.aop.ReturnVerifyHandler.STR_NOT_NULL;
+import static com.dingyabin.prometheusdemo.aop.ReturnVerifyHelper.STR_NOT_NULL;
 import static com.dingyabin.prometheusdemo.aop.enums.MonitorReportType.COUNTER_WITH_RES;
 import static com.dingyabin.prometheusdemo.aop.enums.MonitorReportType.DURATION_SUMMARY;
 

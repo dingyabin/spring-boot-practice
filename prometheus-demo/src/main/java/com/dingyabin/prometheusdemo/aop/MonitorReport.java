@@ -23,7 +23,7 @@ public @interface MonitorReport {
      * 如果value选择了MonitorReportType.COUNTER_WITH_RES
      * 那么需要指定一个key，用于校验注解方法的返回结果是否正常
      * 如果不写，则会使用name()属性
-     * @see ReturnVerifyHandler
+     * @see ReturnVerifyHelper
      *
      * @return key
      */
