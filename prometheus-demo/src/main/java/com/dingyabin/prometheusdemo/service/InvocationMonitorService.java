@@ -24,7 +24,7 @@ public class InvocationMonitorService {
 
 
     public void counterIncr(InvocationModel model) {
-        counterIncr(model.getName(), "signature", model.getShortClassName() + "." + model.getMethodName());
+        counterIncr(model.getMonitorReport().name(), "signature", model.getShortClassName() + "." + model.getMethodName());
     }
 
 
@@ -38,7 +38,7 @@ public class InvocationMonitorService {
 
 
     public void counterWithRetIncr(InvocationModel model, boolean success) {
-        counterWithRetIncr(model.getName(), success, "signature", model.getShortClassName() + "." + model.getMethodName());
+        counterWithRetIncr(model.getMonitorReport().name(), success, "signature", model.getShortClassName() + "." + model.getMethodName());
     }
 
 
@@ -55,7 +55,7 @@ public class InvocationMonitorService {
 
 
     public void timerDuration(InvocationModel model, long cost) {
-        timerDuration(model.getName(), cost, "signature", model.getShortClassName() + "." + model.getMethodName());
+        timerDuration(model.getMonitorReport().name(), cost, "signature", model.getShortClassName() + "." + model.getMethodName());
     }
 
 

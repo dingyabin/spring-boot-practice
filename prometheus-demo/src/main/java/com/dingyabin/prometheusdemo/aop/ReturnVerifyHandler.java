@@ -14,18 +14,15 @@ import java.util.function.Predicate;
  * Date: 2024/7/14.
  * Time:23:44
  */
-@Service
-public class ReturnVerifyService implements InitializingBean {
+public class ReturnVerifyHandler {
 
     public static final String OBJECT_NOT_NULL = "OBJECT_NOT_NULL";
 
     public static final String STR_NOT_NULL = "STR_NOT_NULL";
 
-    private final Map<String, Predicate<Object>> VERIFY_MAP = new HashMap<>();
+    private final static Map<String, Predicate<Object>> VERIFY_MAP = new HashMap<>();
 
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    static {
         VERIFY_MAP.put(OBJECT_NOT_NULL, Objects::nonNull);
         VERIFY_MAP.put(STR_NOT_NULL, o -> (o != null && StringUtils.isNotBlank(o.toString())));
     }
@@ -33,11 +30,12 @@ public class ReturnVerifyService implements InitializingBean {
 
     /**
      * 校验方法是否执行成功
+     *
      * @param retCheckKey 校验key
      * @param returnValue 方法的返回值
      * @return 是否执行成功
      */
-    public boolean retVerify(String retCheckKey, Object returnValue) {
+    public static boolean retVerify(String retCheckKey, Object returnValue) {
         Predicate<Object> fun = VERIFY_MAP.get(retCheckKey);
         if (fun == null) {
             return true;

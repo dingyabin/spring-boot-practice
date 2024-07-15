@@ -17,20 +17,38 @@ import org.springframework.util.ClassUtils;
 @Setter
 public class InvocationModel {
 
-    private String name;
+    private MonitorReport monitorReport;
 
     private String shortClassName;
 
     private String methodName;
 
+    /**
+     * 方法开始执行时间
+     */
+    private long startTime;
 
-    public InvocationModel(ProceedingJoinPoint joinPoint, MonitorReport monitorReport){
-        this.name = monitorReport.name();
-        shortClassName = ClassUtils.getShortName(joinPoint.getTarget().getClass().getName());
+    /**
+     * 方法是否成功
+     */
+    private boolean success;
+
+    /**
+     * 方法返回结果
+     */
+    private Object result;
+
+
+    public InvocationModel(ProceedingJoinPoint joinPoint, MonitorReport monitorReport, long startTime, boolean success, Object result) {
+        this.monitorReport = monitorReport;
+        this.shortClassName = ClassUtils.getShortName(joinPoint.getTarget().getClass().getName());
         Signature signature = joinPoint.getSignature();
         if (signature instanceof MethodSignature) {
-            methodName = ((MethodSignature) signature).getMethod().getName();
+            this.methodName = ((MethodSignature) signature).getMethod().getName();
         }
+        this.startTime = startTime;
+        this.success = success;
+        this.result = result;
     }
 
 
