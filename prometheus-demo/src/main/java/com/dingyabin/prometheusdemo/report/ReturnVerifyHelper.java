@@ -20,9 +20,17 @@ public class ReturnVerifyHelper {
 
     private final static Map<String, Predicate<Object>> VERIFY_MAP = new HashMap<>();
 
+    private ReturnVerifyHelper() {
+    }
+
     static {
         VERIFY_MAP.put(OBJECT_NOT_NULL, Objects::nonNull);
         VERIFY_MAP.put(STR_NOT_NULL, o -> (o != null && StringUtils.isNotBlank(o.toString())));
+    }
+
+
+    public static void addVerifyFunction(String key, Predicate<Object> predicate) {
+        VERIFY_MAP.put(key, predicate);
     }
 
 
