@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: spring-security-demo
+
+server:
+  port: 8080
