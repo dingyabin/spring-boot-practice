@@ -20,6 +20,7 @@
         <module>spring-session</module>
         <module>prometheus-demo</module>
         <module>spring-security-demo</module>
+        <module>api-common</module>
     </modules>
 
 
@@ -42,7 +43,11 @@
     </dependencyManagement>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+        </dependency>
     </dependencies>
 
 

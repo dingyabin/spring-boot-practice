@@ -3,6 +3,8 @@ package com.dingyabin.prometheusdemo.controller;
 import com.dingyabin.prometheusdemo.report.aop.MonitorReport;
 import com.dingyabin.prometheusdemo.report.enums.MonitorReportType;
 import com.dingyabin.prometheusdemo.service.InvocationMonitorService;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,8 +57,11 @@ public class BizController {
 
 
     @RequestMapping("test2")
-    public String test2() {
-        invocationMonitorService.timerDuration("biz_Test_with_ret", 100 );
+    public String test2() throws InterruptedException {
+        for (int i = 0; i< 10000 ; i++) {
+            invocationMonitorService.counterWithRetIncr("biz_many_count", RandomUtils.nextBoolean());
+            Thread.sleep(20);
+        }
         return "ok";
     }
 
