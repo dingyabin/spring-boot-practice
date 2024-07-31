@@ -61,7 +61,7 @@ public class SysLoginAndLogoutService {
     }
 
     /**
-     * 删除当前用户
+     * 删除当前用户缓存
      * @param userDetails 当前用户
      */
     private void delSecurityUserCache(SecurityUserDetails userDetails) {
