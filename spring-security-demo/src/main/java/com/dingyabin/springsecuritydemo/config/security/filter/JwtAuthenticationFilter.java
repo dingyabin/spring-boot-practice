@@ -1,6 +1,7 @@
 package com.dingyabin.springsecuritydemo.config.security.filter;
 
 import com.dingyabin.springsecuritydemo.config.security.SecurityUserDetails;
+import com.dingyabin.springsecuritydemo.enums.RedisKeyEnum;
 import com.dingyabin.springsecuritydemo.model.response.SecurityUserCache;
 import com.dingyabin.springsecuritydemo.model.response.TokenMsg;
 import com.dingyabin.springsecuritydemo.util.JwtUtils;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.alibaba.fastjson.JSON.parseObject;
+import static com.dingyabin.springsecuritydemo.enums.RedisKeyEnum.LOGIN_USER;
 
 /**
  * @author 丁亚宾
@@ -50,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
         TokenMsg tokenMsg = tokenMsgResult.getRight();
-        String securityUserCache = stringRedisTemplate.opsForValue().get("loginUser:" + tokenMsg.getUserId());
+        String securityUserCache = stringRedisTemplate.opsForValue().get(LOGIN_USER.toKey(tokenMsg.getUserId()));
         if (securityUserCache == null) {
             return null;
         }
