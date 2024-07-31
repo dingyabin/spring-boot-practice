@@ -1,6 +1,9 @@
 package com.dingyabin.springsecuritydemo.config.security;
 
 import com.dingyabin.springsecuritydemo.config.security.filter.JwtAuthenticationFilter;
+import com.dingyabin.springsecuritydemo.entity.SysAuthority;
+import com.dingyabin.springsecuritydemo.service.SysAuthorityService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.annotation.Resource;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author 丁亚宾
@@ -41,6 +45,9 @@ public class SecurityConfig {
     @Resource
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Resource
+    private SysAuthorityService sysAuthorityService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity security, AuthenticationConfiguration configuration) throws Exception {
         security.csrf(AbstractHttpConfigurer::disable)
@@ -58,13 +65,21 @@ public class SecurityConfig {
                 //放开登录接口
                 .antMatchers("/login").permitAll()
                 .antMatchers("/logout").authenticated()
-                .anyRequest().hasAuthority("admin")
+                //.anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(customerAccessDeniedHandler)
                 .authenticationEntryPoint(customerAuthenticationEntryPoint)
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, AuthorizationFilter.class);
+
+        //加载权限信息
+        List<SysAuthority> sysAuthorities = sysAuthorityService.selectAllSysAuthority();
+        for (SysAuthority sysAuthority : sysAuthorities) {
+            security.authorizeHttpRequests().antMatchers(sysAuthority.getPath()).hasAuthority(sysAuthority.getAuthority());
+        }
+        //其他的需要登录
+        security.authorizeHttpRequests().anyRequest().authenticated();
         return security.build();
     }
 

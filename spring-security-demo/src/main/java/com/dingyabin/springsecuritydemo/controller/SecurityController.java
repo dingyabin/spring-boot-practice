@@ -45,4 +45,23 @@ public class SecurityController {
     public Result<Object> info() {
         return Result.success("ok!");
     }
+
+
+
+    @PostMapping("/sys/update")
+    public Result<Object> update() {
+        return Result.success("ok!");
+    }
+
+
+    @PostMapping("/sys/save")
+    public Result<Object> save() {
+        return Result.success("ok!");
+    }
+
+
+    @PostMapping("/sys/select")
+    public Result<Object> select() {
+        return Result.success("ok!");
+    }
 }

@@ -1,6 +1,8 @@
 package com.dingyabin.springsecuritydemo.config.security;
 
+import com.dingyabin.springsecuritydemo.entity.SysAuthority;
 import com.dingyabin.springsecuritydemo.entity.SysUser;
+import com.dingyabin.springsecuritydemo.service.SysAuthorityService;
 import com.dingyabin.springsecuritydemo.service.SysUserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 丁亚宾
@@ -21,6 +25,10 @@ public class SecurityUserDetailsService implements UserDetailsService {
     @Resource
     private SysUserService sysUserService;
 
+    @Resource
+    private SysAuthorityService sysAuthorityService;
+
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SysUser sysUser = sysUserService.loadSysUserByName(username);
@@ -29,7 +37,9 @@ public class SecurityUserDetailsService implements UserDetailsService {
         }
         SecurityUserDetails securityUserDetails = new SecurityUserDetails();
         securityUserDetails.setSysUser(sysUser);
-        securityUserDetails.setAuthorityList(Collections.singletonList("admin"));
+
+        List<SysAuthority> sysAuthorities = sysAuthorityService.selectSysAuthorityByUserId(sysUser.getId());
+        securityUserDetails.setAuthorityList(sysAuthorities.stream().map(SysAuthority::getAuthority).collect(Collectors.toList()));
         return securityUserDetails;
     }
 

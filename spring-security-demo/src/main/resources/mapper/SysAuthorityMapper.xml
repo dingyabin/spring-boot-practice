@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingyabin.springsecuritydemo.mapper.SysAuthorityMapper">
+
+    <resultMap id="BaseResultMap" type="com.dingyabin.springsecuritydemo.entity.SysAuthority">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="authority" column="authority" jdbcType="VARCHAR"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id , authority, `path`
+    </sql>
+
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO
+             sys_authority( authority, `path`)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.authority} , #{item.path} )
+        </foreach>
+    </insert>
+
+
+    <select id="selectSysAuthorityByUserId" resultMap="BaseResultMap">
+        select sa.*
+        from sys_user su
+                 LEFT JOIN sys_user_role ur ON ur.user_id = su.id
+                 LEFT JOIN sys_role_authority ra ON ra.role_id = ur.role_id
+                 LEFT JOIN sys_authority sa ON sa.id = ra.authority_id
+        where su.id = #{userId}
+    </select>
+
+</mapper>
