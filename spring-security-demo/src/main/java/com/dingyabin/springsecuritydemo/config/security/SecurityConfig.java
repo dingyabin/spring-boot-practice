@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 //放开登录接口
                 .antMatchers("/login").permitAll()
-                .anyRequest().hasAuthority("dev")
+                .anyRequest().hasAuthority("admin")
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(customerAccessDeniedHandler)
