@@ -1,7 +1,11 @@
 package com.dingyabin.springsecuritydemo.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.dingyabin.response.Result;
+import com.dingyabin.springsecuritydemo.config.security.SecurityUserDetails;
 import com.dingyabin.springsecuritydemo.model.reqest.LoginRequest;
+import com.dingyabin.springsecuritydemo.model.response.TokenMsg;
+import com.dingyabin.springsecuritydemo.util.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,12 +33,20 @@ public class SecurityController {
     public Result<Object> login(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getUserName(), loginRequest.getPwd());
         Authentication authenticate = authenticationManager.authenticate(unauthenticated);
+
         if (authenticate.isAuthenticated()){
             SecurityContextHolder.getContext().setAuthentication(authenticate);
-            Map<String, String> map = new HashMap<>();
-            map.put("token", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-            return Result.success(map);
+            SecurityUserDetails userDetails = (SecurityUserDetails) authenticate.getPrincipal();
+            String token = JwtUtils.getToken(new TokenMsg(userDetails.getSysUser().getId(), userDetails.getUsername()));
+            //放入redis
+            return Result.success(MapUtil.of("token", token));
         }
         return Result.fail(401, "认证失败！");
+    }
+
+
+    @PostMapping("/info")
+    public Result<Object> info(){
+        return Result.success("ok!");
     }
 }

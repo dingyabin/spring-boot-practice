@@ -1,5 +1,6 @@
 package com.dingyabin.springsecuritydemo.config.security;
 
+import com.dingyabin.springsecuritydemo.config.security.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -36,6 +38,9 @@ public class SecurityConfig {
     @Resource
     private SecurityUserDetailsService securityUserDetailsService;
 
+    @Resource
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity security, AuthenticationConfiguration configuration) throws Exception {
         security.csrf(AbstractHttpConfigurer::disable)
@@ -52,11 +57,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 //放开登录接口
                 .antMatchers("/login").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().hasAuthority("dev")
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(customerAccessDeniedHandler)
-                .authenticationEntryPoint(customerAuthenticationEntryPoint);
+                .authenticationEntryPoint(customerAuthenticationEntryPoint)
+                .and()
+                .addFilterBefore(jwtAuthenticationFilter, AuthorizationFilter.class);
         return security.build();
     }
 

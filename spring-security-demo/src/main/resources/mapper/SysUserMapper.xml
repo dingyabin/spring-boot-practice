@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingyabin.springsecuritydemo.mapper.SysUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.dingyabin.springsecuritydemo.entity.SysUser">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="pwd" column="pwd" jdbcType="VARCHAR"/>
+            <result property="state" column="state" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,`name`, pwd,`state`
+    </sql>
+
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO
+             sys_user ( name, pwd, state)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.name} , #{item.pwd} , #{item.state} )
+        </foreach>
+    </insert>
+
+</mapper>

@@ -1,7 +1,12 @@
 package com.dingyabin.springsecuritydemo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -12,12 +17,20 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@ToString
+@TableName(value = "sys_user")
 public class SysUser implements Serializable {
+
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
     private String name;
 
     private String pwd;
 
-    private int state;
+    private Integer state;
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 
 }
