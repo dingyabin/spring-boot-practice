@@ -32,6 +32,13 @@ public class SecurityController {
 
 
 
+    @PostMapping("/logout")
+    public Result<Object> logout() {
+        sysLoginAndLogoutService.logout();
+        return Result.success("退出成功!");
+    }
+
+
 
 
     @PostMapping("/info")

@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 //放开登录接口
                 .antMatchers("/login").permitAll()
+                .antMatchers("/logout").authenticated()
                 .anyRequest().hasAuthority("admin")
                 .and()
                 .exceptionHandling()

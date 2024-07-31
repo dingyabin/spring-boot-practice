@@ -45,6 +45,14 @@ public class Result<T> {
         return new Result<>(data);
     }
 
+    public static <T> Result<T> success() {
+        return new Result<>();
+    }
+
+    public static <T> Result<T> success(String msg) {
+        return new Result<T>().setMsg(msg);
+    }
+
 
     public static <T> Result<T> fail(int code, String msg) {
         return new Result<>(code, msg);

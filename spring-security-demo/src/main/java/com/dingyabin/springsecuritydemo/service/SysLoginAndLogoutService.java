@@ -60,5 +60,25 @@ public class SysLoginAndLogoutService {
         stringRedisTemplate.opsForValue().set(key, JSONObject.toJSONString(new SecurityUserCache(userDetails)), Duration.ofHours(2));
     }
 
+    /**
+     * 删除当前用户
+     * @param userDetails 当前用户
+     */
+    private void delSecurityUserCache(SecurityUserDetails userDetails) {
+        String key = RedisKeyEnum.LOGIN_USER.toKey(userDetails.getSysUser().getId());
+        stringRedisTemplate.delete(key);
+    }
+
+
+
+    public void logout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return;
+        }
+        SecurityContextHolder.clearContext();
+        delSecurityUserCache((SecurityUserDetails) authentication.getPrincipal());
+    }
+
 
 }
