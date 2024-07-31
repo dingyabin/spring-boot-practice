@@ -4,6 +4,7 @@ import cn.hutool.core.map.MapUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.dingyabin.response.Result;
 import com.dingyabin.springsecuritydemo.config.security.SecurityUserDetails;
+import com.dingyabin.springsecuritydemo.enums.RedisKeyEnum;
 import com.dingyabin.springsecuritydemo.model.reqest.LoginRequest;
 import com.dingyabin.springsecuritydemo.model.response.SecurityUserCache;
 import com.dingyabin.springsecuritydemo.model.response.TokenMsg;
@@ -46,7 +47,9 @@ public class SecurityController {
         if (authenticate.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(authenticate);
             SecurityUserDetails userDetails = (SecurityUserDetails) authenticate.getPrincipal();
-            stringRedisTemplate.opsForValue().set("loginUser:" + userDetails.getSysUser().getId(), JSONObject.toJSONString(new SecurityUserCache(userDetails)), Duration.ofHours(2));
+
+            String key = RedisKeyEnum.LOGIN_USER.toKey(userDetails.getSysUser().getId());
+            stringRedisTemplate.opsForValue().set(key, JSONObject.toJSONString(new SecurityUserCache(userDetails)), Duration.ofHours(2));
             String token = JwtUtils.getToken(new TokenMsg(userDetails.getSysUser().getId(), userDetails.getUsername()));
             //放入redis
             return Result.success(MapUtil.of("token", token));

@@ -2,7 +2,6 @@ package com.dingyabin.springsecuritydemo.config.security;
 
 import com.dingyabin.springsecuritydemo.entity.SysUser;
 import com.dingyabin.springsecuritydemo.service.SysUserService;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
