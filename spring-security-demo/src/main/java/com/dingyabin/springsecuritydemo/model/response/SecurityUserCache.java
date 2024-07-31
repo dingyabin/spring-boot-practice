@@ -31,4 +31,11 @@ public class SecurityUserCache {
     }
 
 
+    public SecurityUserCache clearPwd() {
+        if (sysUser != null) {
+            sysUser.setPwd(null);
+        }
+        return this;
+    }
+
 }

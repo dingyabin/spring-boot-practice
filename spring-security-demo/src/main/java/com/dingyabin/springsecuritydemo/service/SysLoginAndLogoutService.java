@@ -37,6 +37,7 @@ public class SysLoginAndLogoutService {
 
     public LoginResponse login(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken unauthenticated = unauthenticated(loginRequest.getUserName(), loginRequest.getPwd());
+        //认证
         Authentication authenticate = authenticationManager.authenticate(unauthenticated);
         if (authenticate.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(authenticate);
@@ -57,7 +58,8 @@ public class SysLoginAndLogoutService {
      */
     private void cacheSecurityUser(SecurityUserDetails userDetails) {
         String key = RedisKeyEnum.LOGIN_USER.toKey(userDetails.getSysUser().getId());
-        stringRedisTemplate.opsForValue().set(key, JSONObject.toJSONString(new SecurityUserCache(userDetails)), Duration.ofHours(JwtUtils.TOKEN_TIME_OUT));
+        String securityUserJson = JSONObject.toJSONString(new SecurityUserCache(userDetails).clearPwd());
+        stringRedisTemplate.opsForValue().set(key, securityUserJson, Duration.ofHours(JwtUtils.TOKEN_TIME_OUT));
     }
 
     /**

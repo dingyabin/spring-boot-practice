@@ -39,13 +39,10 @@ public class SecurityController {
     }
 
 
-
-
-    @PostMapping("/info")
+    @PostMapping("/sys/info")
     public Result<Object> info() {
         return Result.success("ok!");
     }
-
 
 
     @PostMapping("/sys/update")
