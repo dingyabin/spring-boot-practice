@@ -18,7 +18,7 @@ import java.util.Date;
 public class JwtUtils {
     
     // TOKEN的有效期1小时（S）
-    private static final int TOKEN_TIME_OUT = 2;
+    public static final int TOKEN_TIME_OUT = 2;
 
     // 加密KEY
     private static final String TOKEN_SECRET = "HwRpTt5qubhJnIy2oOufdHwRpTt5qubhJnIy2oO";
