@@ -26,7 +26,7 @@ public class SecurityUserDetailsService implements UserDetailsService {
         sysUser.setState(1);
         SecurityUserDetails securityUserDetails = new SecurityUserDetails();
         securityUserDetails.setSysUser(sysUser);
-        securityUserDetails.setAuthorities(Collections.emptySet());
+        securityUserDetails.setAuthorityList(Collections.emptyList());
         return securityUserDetails;
     }
 

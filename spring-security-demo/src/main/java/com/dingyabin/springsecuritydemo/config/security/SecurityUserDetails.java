@@ -1,13 +1,19 @@
 package com.dingyabin.springsecuritydemo.config.security;
 
 import com.dingyabin.springsecuritydemo.entity.SysUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 丁亚宾
@@ -17,20 +23,32 @@ import java.util.Collection;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecurityUserDetails implements UserDetails {
 
     private SysUser sysUser;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private List<String> authorityList;
+
 
     public SecurityUserDetails(SysUser sysUser) {
+        this(sysUser, null);
+    }
+
+    public SecurityUserDetails(SysUser sysUser, List<String> authorityList) {
         this.sysUser = sysUser;
+        this.authorityList = authorityList;
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        if (authorityList == null) {
+            return Collections.emptyList();
+        }
+        return authorityList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
+
 
     @Override
     public String getPassword() {
