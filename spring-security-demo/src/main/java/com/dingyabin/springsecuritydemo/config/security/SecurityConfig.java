@@ -2,10 +2,10 @@ package com.dingyabin.springsecuritydemo.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,11 +36,8 @@ public class SecurityConfig {
     @Resource
     private SecurityUserDetailsService securityUserDetailsService;
 
-
-    private AuthenticationManager authenticationManager;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity security, AuthenticationConfiguration configuration) throws Exception {
         security.csrf(AbstractHttpConfigurer::disable)
                 //跨域
                 .cors().configurationSource(corsConfigurationSource())
@@ -50,7 +47,8 @@ public class SecurityConfig {
                 .and()
                 //禁用表单登录
                 .formLogin().disable()
-                .authenticationProvider(daoAuthenticationProvider())
+                .logout().disable()
+                .authenticationManager(authenticationManager(configuration))
                 .authorizeHttpRequests()
                 //放开登录接口
                 .antMatchers("/login").permitAll()
@@ -59,10 +57,7 @@ public class SecurityConfig {
                 .exceptionHandling()
                 .accessDeniedHandler(customerAccessDeniedHandler)
                 .authenticationEntryPoint(customerAuthenticationEntryPoint);
-
-        SecurityFilterChain securityFilterChain = security.build();
-        authenticationManager = security.getSharedObject(AuthenticationManager.class);
-        return securityFilterChain;
+        return security.build();
     }
 
 
@@ -101,10 +96,10 @@ public class SecurityConfig {
     }
 
 
+
     @Bean
-    @DependsOn("securityFilterChain")
-    public AuthenticationManager authenticationManager(){
-        return authenticationManager;
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
 

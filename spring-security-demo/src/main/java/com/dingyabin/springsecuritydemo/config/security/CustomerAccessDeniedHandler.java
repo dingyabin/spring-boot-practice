@@ -24,6 +24,7 @@ public class CustomerAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         Result<Object> result = Result.fail(403, "无权访问！");
+        response.setCharacterEncoding("utf-8");
         ServletUtil.write(response, JSONObject.toJSONString(result), MediaType.APPLICATION_JSON_VALUE);
     }
 
