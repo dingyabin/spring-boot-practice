@@ -1,6 +1,6 @@
 package com.dingyabin.springsecuritydemo.config.security;
 
-import com.dingyabin.springsecuritydemo.entity.SysUser;
+import com.dingyabin.security.entity.SysUser;
 import com.dingyabin.springsecuritydemo.model.response.SecurityUserCache;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

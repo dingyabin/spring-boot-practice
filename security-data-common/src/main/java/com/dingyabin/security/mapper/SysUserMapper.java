@@ -1,8 +1,9 @@
-package com.dingyabin.springsecuritydemo.mapper;
+package com.dingyabin.security.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.dingyabin.springsecuritydemo.entity.SysUser;
+import com.dingyabin.security.entity.SysUser;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dingyabin.springsecuritydemo.mapper.SysAuthorityMapper">
+<mapper namespace="com.dingyabin.security.mapper.SysAuthorityMapper">
 
-    <resultMap id="BaseResultMap" type="com.dingyabin.springsecuritydemo.entity.SysAuthority">
+    <resultMap id="BaseResultMap" type="com.dingyabin.security.entity.SysAuthority">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="authority" column="authority" jdbcType="VARCHAR"/>
             <result property="path" column="path" jdbcType="VARCHAR"/>

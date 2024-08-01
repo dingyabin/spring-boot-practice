@@ -2,24 +2,25 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dingyabin.springsecuritydemo.mapper.SysRoleMapper">
+<mapper namespace="com.dingyabin.security.mapper.SysUserRoleMapper">
 
-    <resultMap id="BaseResultMap" type="com.dingyabin.springsecuritydemo.entity.SysRole">
+    <resultMap id="BaseResultMap" type="com.dingyabin.security.entity.SysUserRole">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="roleId" column="role_id" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,role_name
+        id,user_id,role_id
     </sql>
 
 
     <insert id="insertBatch" parameterType="java.util.List">
         INSERT INTO
-             sys_role ( role_name)
+             sys_user_role ( user_id, role_id)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.roleName} )
+            (#{item.userId} , #{item.roleId} )
         </foreach>
     </insert>
 

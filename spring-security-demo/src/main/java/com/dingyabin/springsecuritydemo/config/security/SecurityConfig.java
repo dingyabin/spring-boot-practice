@@ -1,9 +1,8 @@
 package com.dingyabin.springsecuritydemo.config.security;
 
+import com.dingyabin.security.service.SysAuthorityService;
 import com.dingyabin.springsecuritydemo.config.security.filter.JwtAuthenticationFilter;
-import com.dingyabin.springsecuritydemo.entity.SysAuthority;
-import com.dingyabin.springsecuritydemo.service.SysAuthorityService;
-import org.apache.commons.collections4.CollectionUtils;
+import com.dingyabin.security.entity.SysAuthority;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,8 +1,8 @@
-package com.dingyabin.springsecuritydemo.service;
+package com.dingyabin.security.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dingyabin.springsecuritydemo.entity.SysAuthority;
-import com.dingyabin.springsecuritydemo.mapper.SysAuthorityMapper;
+import com.dingyabin.security.entity.SysAuthority;
+import com.dingyabin.security.mapper.SysAuthorityMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

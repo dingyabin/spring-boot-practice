@@ -1,4 +1,4 @@
-package com.dingyabin.springsecuritydemo.entity;
+package com.dingyabin.security.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

@@ -1,19 +1,20 @@
-package com.dingyabin.springsecuritydemo.entity;
+package com.dingyabin.security.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 
- * @TableName sys_authority
+ * @TableName sys_user_role
  */
-@TableName(value ="sys_authority")
+@TableName(value ="sys_user_role")
 @Data
-public class SysAuthority implements Serializable {
+public class SysUserRole implements Serializable {
     /**
      * 
      */
@@ -23,12 +24,12 @@ public class SysAuthority implements Serializable {
     /**
      * 
      */
-    private String authority;
+    private Long userId;
 
     /**
      * 
      */
-    private String path;
+    private Long roleId;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -1,7 +1,7 @@
 package com.dingyabin.springsecuritydemo.model.response;
 
 import com.dingyabin.springsecuritydemo.config.security.SecurityUserDetails;
-import com.dingyabin.springsecuritydemo.entity.SysUser;
+import com.dingyabin.security.entity.SysUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

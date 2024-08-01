@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 // 优质的 spring/boot/data/security/cloud 框架中文文档尽在 => https://springdoc.cn
-@SpringBootApplication
-@MapperScan("com.dingyabin.springsecuritydemo.mapper")
+@MapperScan("com.dingyabin.security.mapper")
+@SpringBootApplication(scanBasePackages = {"com.dingyabin.springsecuritydemo", "com.dingyabin.security"})
 public class SpringSecurityDemoApplication {
 
     public static void main(String[] args) {

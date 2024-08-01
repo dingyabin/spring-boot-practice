@@ -1,16 +1,15 @@
 package com.dingyabin.springsecuritydemo.config.security;
 
-import com.dingyabin.springsecuritydemo.entity.SysAuthority;
-import com.dingyabin.springsecuritydemo.entity.SysUser;
-import com.dingyabin.springsecuritydemo.service.SysAuthorityService;
-import com.dingyabin.springsecuritydemo.service.SysUserService;
+import com.dingyabin.security.entity.SysAuthority;
+import com.dingyabin.security.entity.SysUser;
+import com.dingyabin.security.service.SysAuthorityService;
+import com.dingyabin.security.service.SysUserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

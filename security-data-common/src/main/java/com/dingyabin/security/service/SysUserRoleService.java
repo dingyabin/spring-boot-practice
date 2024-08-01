@@ -1,8 +1,8 @@
-package com.dingyabin.springsecuritydemo.service;
+package com.dingyabin.security.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dingyabin.springsecuritydemo.entity.SysUserRole;
-import com.dingyabin.springsecuritydemo.mapper.SysUserRoleMapper;
+import com.dingyabin.security.entity.SysUserRole;
+import com.dingyabin.security.mapper.SysUserRoleMapper;
 import org.springframework.stereotype.Service;
 
 /**

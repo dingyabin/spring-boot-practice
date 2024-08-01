@@ -1,11 +1,10 @@
-package com.dingyabin.springsecuritydemo.service;
+package com.dingyabin.security.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dingyabin.springsecuritydemo.entity.SysUser;
-import com.dingyabin.springsecuritydemo.mapper.SysUserMapper;
+import com.dingyabin.security.entity.SysUser;
+import com.dingyabin.security.mapper.SysUserMapper;
 import org.springframework.stereotype.Service;
 
 /**
