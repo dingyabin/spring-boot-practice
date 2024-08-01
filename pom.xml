@@ -22,6 +22,7 @@
         <module>spring-security-demo</module>
         <module>api-common</module>
         <module>security-data-common</module>
+        <module>sa-token-demo</module>
     </modules>
 
 
