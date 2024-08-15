@@ -4,6 +4,7 @@ package com.dingyabin.redis.helper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.*;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * Time:22:53
  */
 @Slf4j
+@Component
 public class RedisHelper extends AbstractRedisHelper {
 
     private final ValueOperations<String, String> stringOperations;
@@ -36,6 +38,7 @@ public class RedisHelper extends AbstractRedisHelper {
         zSetOperations = redisTemplate.opsForZSet();
     }
 
+
     public void setCache(String key, Object value, Integer timeout) {
         this.setCache(key, value, timeout, TimeUnit.SECONDS);
     }
@@ -53,12 +56,6 @@ public class RedisHelper extends AbstractRedisHelper {
 
     public Long increment(String key, long delta, Integer timeout, TimeUnit timeUnit) {
         Long increment = stringOperations.increment(key, delta);
-        expire(key, (long) timeout, timeUnit);
-        return increment;
-    }
-
-    public Double increment(String key, double delta, Integer timeout, TimeUnit timeUnit) {
-        Double increment = stringOperations.increment(key, delta);
         expire(key, (long) timeout, timeUnit);
         return increment;
     }
