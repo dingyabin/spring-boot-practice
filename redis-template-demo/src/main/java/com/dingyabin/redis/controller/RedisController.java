@@ -22,7 +22,7 @@ public class RedisController {
 
     @PostMapping("/send")
     public Result<Object> select(@RequestParam("data") String data) {
-        stringRedisTemplate.convertAndSend("first-channel",data);
+        stringRedisTemplate.convertAndSend("hello*", data);
         return Result.success();
     }
 

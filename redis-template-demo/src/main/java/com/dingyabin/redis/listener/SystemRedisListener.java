@@ -18,7 +18,7 @@ public class SystemRedisListener extends BaseRedisMessageListener {
 
 
     @Override
-    public Collection<? extends Topic> topicToBeSubscribed() {
+    public Collection<? extends Topic> topics() {
         return Collections.singleton(ChannelTopic.of("first-channel"));
     }
 

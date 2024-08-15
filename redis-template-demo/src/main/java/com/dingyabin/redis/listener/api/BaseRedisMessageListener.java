@@ -17,7 +17,7 @@ public abstract class BaseRedisMessageListener implements MessageListener {
      * 订阅的主题是什么
      * @return
      */
-   public abstract Collection<? extends Topic> topicToBeSubscribed();
+   public abstract Collection<? extends Topic> topics();
 
 
 

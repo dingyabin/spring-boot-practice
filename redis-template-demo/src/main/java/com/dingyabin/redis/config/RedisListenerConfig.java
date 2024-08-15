@@ -33,7 +33,7 @@ public class RedisListenerConfig {
         listenerContainer.setConnectionFactory(redisConnectionFactory);
         listenerContainer.setTaskExecutor(createTaskExecutor());
         for (BaseRedisMessageListener listener : baseRedisMessageListeners) {
-            listenerContainer.addMessageListener(listener, listener.topicToBeSubscribed());
+            listenerContainer.addMessageListener(listener, listener.topics());
         }
         return listenerContainer;
     }
@@ -47,7 +47,7 @@ public class RedisListenerConfig {
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(100)
         );
-        BasicThreadFactory threadFactory = new BasicThreadFactory.Builder().daemon(false).namingPattern("Redis-listener-thread-%s").build();
+        BasicThreadFactory threadFactory = new BasicThreadFactory.Builder().namingPattern("Redis-listener-thread-%s").build();
         threadPoolExecutor.setThreadFactory(threadFactory);
         return threadPoolExecutor;
     }
