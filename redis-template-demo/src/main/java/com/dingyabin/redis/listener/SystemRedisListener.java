@@ -25,7 +25,7 @@ public class SystemRedisListener extends BaseRedisMessageListener {
 
     @Override
     public void handleMessage(String message, String channel, byte[] pattern) {
-        System.out.println(Thread.currentThread().getName() + " --收到消息: " + message + "--channel: " + channel);
+        System.out.println(Thread.currentThread().getName() + " --收到消息: " + message + " --channel: " + channel);
 
     }
 

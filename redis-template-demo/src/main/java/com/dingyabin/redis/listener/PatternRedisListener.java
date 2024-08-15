@@ -25,6 +25,6 @@ public class PatternRedisListener extends BaseRedisMessageListener {
 
     @Override
     protected void handleMessage(String message, String channel, byte[] pattern) {
-        System.out.println(Thread.currentThread().getName() + " --收到消息: " + message + "--channel: " + channel + "--pattern:" + new String(pattern));
+        System.out.println(Thread.currentThread().getName() + " --收到消息: " + message + " --channel: " + channel + " --pattern:" + new String(pattern));
     }
 }
