@@ -23,6 +23,7 @@
         <module>api-common</module>
         <module>security-data-common</module>
         <module>sa-token-demo</module>
+        <module>redis-template-demo</module>
     </modules>
 
 
