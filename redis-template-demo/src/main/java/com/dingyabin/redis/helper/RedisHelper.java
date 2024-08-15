@@ -479,5 +479,10 @@ public class RedisHelper extends AbstractRedisHelper {
     public Long getExpire(String key) {
         return this.redisTemplate.getExpire(key, TimeUnit.SECONDS);
     }
+
+
+    public void sendMessage(String channel, String message){
+        getStringRedisTemplate().convertAndSend(channel, message);
+    }
 }
 
