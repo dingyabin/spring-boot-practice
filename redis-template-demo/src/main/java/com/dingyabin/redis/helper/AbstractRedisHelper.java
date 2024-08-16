@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractRedisHelper {
 
+    private final String DATE_FORMAT_STYLE = "yyyy-MM-dd HH:mm:ss";
+
     protected StringRedisTemplate redisTemplate;
 
 
@@ -23,7 +25,7 @@ public abstract class AbstractRedisHelper {
 
 
     public String toJson(Object object) {
-        return object instanceof String ? object.toString() : JSONObject.toJSONString(object);
+        return object instanceof String ? object.toString() : JSONObject.toJSONStringWithDateFormat(object, DATE_FORMAT_STYLE);
     }
 
 
