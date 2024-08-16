@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 
 /**
@@ -31,7 +32,7 @@ public class RedisHelper extends AbstractRedisHelper {
 
 
     public RedisHelper(StringRedisTemplate stringRedisTemplate) {
-        this.redisTemplate = stringRedisTemplate;
+        super(stringRedisTemplate);
         stringOperations = redisTemplate.opsForValue();
         listOperations = redisTemplate.opsForList();
         setOperations = redisTemplate.opsForSet();
@@ -49,20 +50,32 @@ public class RedisHelper extends AbstractRedisHelper {
     }
 
 
-    public Long increment(String key, Integer timeout) {
-        return increment(key, 1L, timeout, TimeUnit.SECONDS);
+    public Long increment(String key) {
+        return incrementWithExpire(key, -1);
     }
 
 
-    public Long increment(String key, long delta, Integer timeout, TimeUnit timeUnit) {
+    public Long increment(String key, Long delta) {
+        return incrementWithExpire(key, delta, -1, null);
+    }
+
+
+    public Long incrementWithExpire(String key, Integer timeout) {
+        return incrementWithExpire(key, 1L, timeout, TimeUnit.SECONDS);
+    }
+
+
+    public Long incrementWithExpire(String key, long delta, Integer timeout, TimeUnit timeUnit) {
         Long increment = stringOperations.increment(key, delta);
-        expire(key, (long) timeout, timeUnit);
+        if (timeout != null && timeout > 0) {
+            expire(key, (long) timeout, timeUnit);
+        }
         return increment;
     }
 
 
     public Long decrement(String key, Integer timeout) {
-        return this.decrement(key, 1L, timeout, TimeUnit.SECONDS);
+        return decrement(key, 1L, timeout, TimeUnit.SECONDS);
     }
 
 
@@ -149,13 +162,9 @@ public class RedisHelper extends AbstractRedisHelper {
         if (dataList.size() > 8000) {
             log.info("Redis集合类型leftPushAll集合对象大于8000，缓存Key:{}", key);
         }
-        getStringRedisTemplate().executePipelined(new SessionCallback<Object>() {
-            @Override
-            public Object execute(RedisOperations operations) throws DataAccessException {
-                operations.opsForList().leftPushAll(key, toListString(dataList));
-                operations.expire(key, (long) timeout, timeUnit);
-                return null;
-            }
+        executePipelined(operations -> {
+            operations.opsForList().leftPushAll(key, toListString(dataList));
+            operations.expire(key, (long) timeout, timeUnit);
         });
     }
 
@@ -172,13 +181,10 @@ public class RedisHelper extends AbstractRedisHelper {
         if (dataList.size() > 8000) {
             log.info("Redis集合类型rightPushAll集合对象大于8000，缓存Key:{}", key);
         }
-        getStringRedisTemplate().executePipelined(new SessionCallback<Object>() {
-            @Override
-            public Object execute(RedisOperations operations) throws DataAccessException {
-                operations.opsForList().rightPushAll(key, toListString(dataList));
-                operations.expire(key, (long) timeout, timeUnit);
-                return null;
-            }
+
+        executePipelined(operations -> {
+            operations.opsForList().rightPushAll(key, toListString(dataList));
+            operations.expire(key, (long) timeout, timeUnit);
         });
     }
 
@@ -302,13 +308,9 @@ public class RedisHelper extends AbstractRedisHelper {
         if (CollectionUtils.isEmpty(dataMap)) {
             return;
         }
-        getStringRedisTemplate().executePipelined(new SessionCallback<Object>() {
-            @Override
-            public Object execute(RedisOperations operations) throws DataAccessException {
-                operations.opsForHash().putAll(key, dataMap);
-                operations.expire(key, (long) timeout, timeUnit);
-                return null;
-            }
+        executePipelined(operations -> {
+            operations.opsForHash().putAll(key, dataMap);
+            operations.expire(key, (long) timeout, timeUnit);
         });
     }
 
@@ -319,13 +321,9 @@ public class RedisHelper extends AbstractRedisHelper {
 
 
     public void put(String key, String hashKey, String value, Integer timeout, TimeUnit timeUnit) {
-        getStringRedisTemplate().executePipelined(new SessionCallback<Object>() {
-            @Override
-            public Object execute(RedisOperations operations) throws DataAccessException {
-                operations.opsForHash().put(key, hashKey, value);
-                operations.expire(key, (long) timeout, timeUnit);
-                return null;
-            }
+        executePipelined(operations -> {
+            operations.opsForHash().put(key, hashKey, value);
+            operations.expire(key, (long) timeout, timeUnit);
         });
     }
 
@@ -350,13 +348,9 @@ public class RedisHelper extends AbstractRedisHelper {
 
 
     public void addAll(String key, Set<String> dataSet, Integer timeout, TimeUnit timeUnit) {
-        getStringRedisTemplate().executePipelined(new SessionCallback<Object>() {
-            @Override
-            public Object execute(RedisOperations operations) throws DataAccessException {
-                operations.opsForSet().add(key, dataSet.toArray());
-                operations.expire(key, (long) timeout, timeUnit);
-                return null;
-            }
+        executePipelined(operations -> {
+            operations.opsForSet().add(key, dataSet.toArray());
+            operations.expire(key, (long) timeout, timeUnit);
         });
     }
 
@@ -484,5 +478,17 @@ public class RedisHelper extends AbstractRedisHelper {
     public void sendMessage(String channel, String message){
         getStringRedisTemplate().convertAndSend(channel, message);
     }
+
+
+    public List<Object> executePipelined(Consumer<RedisOperations> redisOperationsConsumer) {
+        return getStringRedisTemplate().executePipelined(new SessionCallback<Object>() {
+            @Override
+            public Object execute(RedisOperations operations) throws DataAccessException {
+                redisOperationsConsumer.accept(operations);
+                return null;
+            }
+        });
+    }
+
 }
 

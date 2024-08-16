@@ -16,7 +16,8 @@ public abstract class AbstractRedisHelper {
     protected StringRedisTemplate redisTemplate;
 
 
-    public AbstractRedisHelper() {
+    public AbstractRedisHelper(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
     }
 
     public StringRedisTemplate getStringRedisTemplate() {
