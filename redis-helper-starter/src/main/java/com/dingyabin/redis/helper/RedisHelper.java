@@ -51,22 +51,22 @@ public class RedisHelper extends AbstractRedisHelper {
     }
 
 
-    public Long increment(String key) {
-        return incrementWithExpire(key, -1);
+    public Long incr(String key) {
+        return incrWithExpire(key, -1);
     }
 
 
-    public Long increment(String key, Long delta) {
-        return incrementWithExpire(key, delta, -1, null);
+    public Long incr(String key, Long delta) {
+        return incrWithExpire(key, delta, -1, null);
     }
 
 
-    public Long incrementWithExpire(String key, Integer timeout) {
-        return incrementWithExpire(key, 1L, timeout, TimeUnit.SECONDS);
+    public Long incrWithExpire(String key, Integer timeout) {
+        return incrWithExpire(key, 1L, timeout, TimeUnit.SECONDS);
     }
 
 
-    public Long incrementWithExpire(String key, long delta, Integer timeout, TimeUnit timeUnit) {
+    public Long incrWithExpire(String key, long delta, Integer timeout, TimeUnit timeUnit) {
         Long increment = stringOperations.increment(key, delta);
         if (timeout != null && timeout > 0) {
             expire(key, (long) timeout, timeUnit);
@@ -75,12 +75,12 @@ public class RedisHelper extends AbstractRedisHelper {
     }
 
 
-    public Long decrement(String key, Integer timeout) {
-        return decrement(key, 1L, timeout, TimeUnit.SECONDS);
+    public Long decr(String key, Integer timeout) {
+        return decr(key, 1L, timeout, TimeUnit.SECONDS);
     }
 
 
-    public Long decrement(String key, long delta, Integer timeout, TimeUnit timeUnit) {
+    public Long decr(String key, long delta, Integer timeout, TimeUnit timeUnit) {
         Long decrement = stringOperations.decrement(key, delta);
         this.expire(key, (long) timeout, timeUnit);
         return decrement;
@@ -122,7 +122,7 @@ public class RedisHelper extends AbstractRedisHelper {
     }
 
 
-    public void set(String key, long index, Object value) {
+    public void setList(String key, long index, Object value) {
         listOperations.set(key, index, toJson(value));
     }
 
@@ -153,7 +153,7 @@ public class RedisHelper extends AbstractRedisHelper {
         listOperations.rightPushIfPresent(key, toJson(value));
     }
 
-    public void remove(String key, long count, Object value) {
+    public void removeList(String key, long count, Object value) {
         listOperations.remove(key, count, toJson(value));
     }
 
@@ -382,7 +382,7 @@ public class RedisHelper extends AbstractRedisHelper {
     }
 
 
-    public Long size(String key) {
+    public Long setSize(String key) {
         return setOperations.size(key);
     }
 
@@ -398,12 +398,12 @@ public class RedisHelper extends AbstractRedisHelper {
     /*****************************************ZSET****************************************************/
 
 
-    public void add(String key, String value, double score) {
+    public void addZset(String key, String value, double score) {
         zSetOperations.add(key, value, score);
     }
 
 
-    public Double incrementScore(String key, String value, double delta) {
+    public Double incrScore(String key, String value, double delta) {
         return zSetOperations.incrementScore(key, value, delta);
     }
 
