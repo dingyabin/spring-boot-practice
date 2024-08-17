@@ -1,14 +1,9 @@
 package com.dingyabin.redis.config;
 
-import com.dingyabin.redis.listener.api.BaseRedisMessageListener;
+import com.dingyabin.redis.listener.BaseRedisListenerConfig;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
-import javax.annotation.Resource;
-import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -20,26 +15,11 @@ import java.util.concurrent.TimeUnit;
  * Time:21:44
  */
 @Configuration
-public class RedisListenerConfig {
+public class RedisListenerConfig extends BaseRedisListenerConfig {
 
 
-    @Resource
-    private List<BaseRedisMessageListener> baseRedisMessageListeners;
-
-
-    @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory) {
-        RedisMessageListenerContainer listenerContainer = new RedisMessageListenerContainer();
-        listenerContainer.setConnectionFactory(redisConnectionFactory);
-        listenerContainer.setTaskExecutor(createTaskExecutor());
-        for (BaseRedisMessageListener listener : baseRedisMessageListeners) {
-            listenerContainer.addMessageListener(listener, listener.topics());
-        }
-        return listenerContainer;
-    }
-
-
-    private Executor createTaskExecutor() {
+    @Override
+    protected Executor createTaskExecutor() {
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
                 2,
                 10,
@@ -51,6 +31,4 @@ public class RedisListenerConfig {
         threadPoolExecutor.setThreadFactory(threadFactory);
         return threadPoolExecutor;
     }
-
-
 }

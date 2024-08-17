@@ -24,6 +24,7 @@
         <module>security-data-common</module>
         <module>sa-token-demo</module>
         <module>redis-template-demo</module>
+        <module>redis-helper-starter</module>
     </modules>
 
 
@@ -41,6 +42,11 @@
                 <version>5.8.19</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.dingyabin</groupId>
+                <artifactId>redis-helper-starter</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

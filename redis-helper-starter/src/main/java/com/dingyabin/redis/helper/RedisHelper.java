@@ -4,11 +4,11 @@ package com.dingyabin.redis.helper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.*;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -19,7 +19,6 @@ import java.util.function.Consumer;
  * Time:22:53
  */
 @Slf4j
-@Component
 public class RedisHelper extends AbstractRedisHelper {
 
     private final ValueOperations<String, String> stringOperations;
