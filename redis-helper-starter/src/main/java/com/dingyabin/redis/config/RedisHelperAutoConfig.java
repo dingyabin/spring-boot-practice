@@ -2,7 +2,7 @@ package com.dingyabin.redis.config;
 
 import com.dingyabin.redis.helper.RedisHelper;
 import com.dingyabin.redis.limiter.RedisLimiterHelper;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  * Time:19:33
  */
 @Configuration(proxyBeanMethods = false)
-public class RedisHelperConfig {
+public class RedisHelperAutoConfig {
 
 
     @Bean
@@ -29,7 +29,7 @@ public class RedisHelperConfig {
 
 
     @Bean
-    @ConditionalOnBean(StringRedisTemplate.class)
+    @ConditionalOnClass(StringRedisTemplate.class)
     public RedisHelper redisHelper(StringRedisTemplate stringRedisTemplate) {
         return new RedisHelper(stringRedisTemplate);
     }

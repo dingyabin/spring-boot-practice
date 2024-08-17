@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.dingyabin.redis.config.RedisHelperConfig
+com.dingyabin.redis.config.RedisHelperAutoConfig
