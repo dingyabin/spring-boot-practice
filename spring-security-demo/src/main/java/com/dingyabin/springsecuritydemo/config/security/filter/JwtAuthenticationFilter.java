@@ -1,13 +1,12 @@
 package com.dingyabin.springsecuritydemo.config.security.filter;
 
+import com.dingyabin.redis.helper.RedisHelper;
 import com.dingyabin.springsecuritydemo.config.security.SecurityUserDetails;
-import com.dingyabin.springsecuritydemo.enums.RedisKeyEnum;
 import com.dingyabin.springsecuritydemo.model.response.SecurityUserCache;
 import com.dingyabin.springsecuritydemo.model.response.TokenMsg;
 import com.dingyabin.springsecuritydemo.util.JwtUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.alibaba.fastjson.JSON.parseObject;
 import static com.dingyabin.springsecuritydemo.enums.RedisKeyEnum.LOGIN_USER;
 
 /**
@@ -33,7 +31,7 @@ import static com.dingyabin.springsecuritydemo.enums.RedisKeyEnum.LOGIN_USER;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Resource
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisHelper redisHelper;
 
 
     @Override
@@ -52,11 +50,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
         TokenMsg tokenMsg = tokenMsgResult.getRight();
-        String securityUserCache = stringRedisTemplate.opsForValue().get(LOGIN_USER.toKey(tokenMsg.getUserId()));
+        SecurityUserCache securityUserCache = redisHelper.getCacheObject(LOGIN_USER.toKey(tokenMsg.getUserId()), SecurityUserCache.class);
         if (securityUserCache == null) {
             return null;
         }
-        SecurityUserDetails userDetails = new SecurityUserDetails(parseObject(securityUserCache, SecurityUserCache.class));
+        SecurityUserDetails userDetails = new SecurityUserDetails(securityUserCache);
         return UsernamePasswordAuthenticationToken.authenticated(userDetails, null, userDetails.getAuthorities());
     }
 

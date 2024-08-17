@@ -2,10 +2,12 @@ package com.dingyabin.redis.helper;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.*;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,6 +89,9 @@ public class RedisHelper extends AbstractRedisHelper {
 
     public <T> T getCacheObject(String key, Class<T> clazz) {
         String value = stringOperations.get(key);
+        if (StringUtils.isBlank(value)) {
+            return null;
+        }
         return toJavaObject(value, clazz);
     }
 
@@ -103,6 +108,9 @@ public class RedisHelper extends AbstractRedisHelper {
 
     public <T> List<T> multiGetObject(List<String> keys, Class<T> clazz) {
         List<String> strings = stringOperations.multiGet(keys);
+        if (CollectionUtils.isEmpty(strings)) {
+            return Collections.emptyList();
+        }
         return toJavaList(strings, clazz);
     }
 
@@ -250,43 +258,43 @@ public class RedisHelper extends AbstractRedisHelper {
     /*****************************HASH********************************************/
 
 
-    public Long delete(String key, Object... hashKeys) {
+    public Long deleteHash(String key, Object... hashKeys) {
         return redisTemplate.opsForHash().delete(key, hashKeys);
     }
 
 
-    public Boolean hasKey(String key, String hashKey) {
+    public Boolean hasHashKey(String key, String hashKey) {
         HashOperations<String, String, String> hashOperations = this.redisTemplate.opsForHash();
         return hashOperations.hasKey(key, hashKey);
     }
 
 
-    public <T> T get(String key, Class<T> clazz, String hashKey) {
+    public <T> T getHashKey(String key, Class<T> clazz, String hashKey) {
         HashOperations<String, String, String> hashOperations = this.redisTemplate.opsForHash();
         String object = hashOperations.get(key, hashKey);
         return (null == object) ? null : this.toJavaObject(object, clazz);
     }
 
 
-    public <T> List<T> multiGet(String key, Class<T> clazz, List<String> hashKeys) {
+    public <T> List<T> multiGetHashKeys(String key, Class<T> clazz, List<String> hashKeys) {
         HashOperations<String, String, String> hashOperations = this.redisTemplate.opsForHash();
         List<String> objects = hashOperations.multiGet(key, hashKeys);
         return this.toJavaList(objects, clazz);
     }
 
 
-    public Long increment(String key, String hashKey, long delta) {
+    public Long incrHashKey(String key, String hashKey, long delta) {
         HashOperations<String, String, String> hashOperations = this.redisTemplate.opsForHash();
         return hashOperations.increment(key, hashKey, delta);
     }
 
 
-    public Double increment(String key, String hashKey, double delta) {
+    public Double incrHashKey(String key, String hashKey, double delta) {
         HashOperations<String, String, String> hashOperations = this.redisTemplate.opsForHash();
         return hashOperations.increment(key, hashKey, delta);
     }
 
-    public Set<String> keys(String key) {
+    public Set<String> hashKeys(String key) {
         HashOperations<String, String, String> hashOperations = this.redisTemplate.opsForHash();
         return hashOperations.keys(key);
     }
@@ -314,19 +322,19 @@ public class RedisHelper extends AbstractRedisHelper {
     }
 
 
-    public void put(String key, String hashKey, String value, Integer timeout) {
-        this.put(key, hashKey, value, timeout, TimeUnit.SECONDS);
+    public void putHashKey(String key, String hashKey, String value, Integer timeout) {
+        this.putHashKey(key, hashKey, value, timeout, TimeUnit.SECONDS);
     }
 
 
-    public void put(String key, String hashKey, String value, Integer timeout, TimeUnit timeUnit) {
+    public void putHashKey(String key, String hashKey, String value, Integer timeout, TimeUnit timeUnit) {
         executePipelined(operations -> {
             operations.opsForHash().put(key, hashKey, value);
             operations.expire(key, (long) timeout, timeUnit);
         });
     }
 
-    public void put(String key, String hashKey, String value) {
+    public void putHashKey(String key, String hashKey, String value) {
         HashOperations<String, String, String> hashOperations = this.redisTemplate.opsForHash();
         hashOperations.put(key, hashKey, value);
     }
@@ -474,7 +482,7 @@ public class RedisHelper extends AbstractRedisHelper {
     }
 
 
-    public void sendMessage(String channel, String message){
+    public void sendMessage(String channel, String message) {
         getStringRedisTemplate().convertAndSend(channel, message);
     }
 

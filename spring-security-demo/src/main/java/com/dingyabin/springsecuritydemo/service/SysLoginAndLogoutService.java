@@ -1,6 +1,6 @@
 package com.dingyabin.springsecuritydemo.service;
 
-import com.alibaba.fastjson.JSONObject;
+import com.dingyabin.redis.helper.RedisHelper;
 import com.dingyabin.springsecuritydemo.config.security.SecurityUserDetails;
 import com.dingyabin.springsecuritydemo.enums.RedisKeyEnum;
 import com.dingyabin.springsecuritydemo.model.reqest.LoginRequest;
@@ -8,7 +8,6 @@ import com.dingyabin.springsecuritydemo.model.response.LoginResponse;
 import com.dingyabin.springsecuritydemo.model.response.SecurityUserCache;
 import com.dingyabin.springsecuritydemo.model.response.TokenMsg;
 import com.dingyabin.springsecuritydemo.util.JwtUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,7 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import static org.springframework.security.authentication.UsernamePasswordAuthenticationToken.unauthenticated;
 
@@ -32,7 +31,7 @@ public class SysLoginAndLogoutService {
     private AuthenticationManager authenticationManager;
 
     @Resource
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisHelper redisHelper;
 
 
     public LoginResponse login(LoginRequest loginRequest) {
@@ -58,8 +57,7 @@ public class SysLoginAndLogoutService {
      */
     private void cacheSecurityUser(SecurityUserDetails userDetails) {
         String key = RedisKeyEnum.LOGIN_USER.toKey(userDetails.getSysUser().getId());
-        String securityUserJson = JSONObject.toJSONString(new SecurityUserCache(userDetails).clearPwd());
-        stringRedisTemplate.opsForValue().set(key, securityUserJson, Duration.ofHours(JwtUtils.TOKEN_TIME_OUT));
+        redisHelper.setCache(key, new SecurityUserCache(userDetails).clearPwd(), JwtUtils.TOKEN_TIME_OUT, TimeUnit.HOURS);
     }
 
     /**
@@ -68,7 +66,7 @@ public class SysLoginAndLogoutService {
      */
     private void delSecurityUserCache(SecurityUserDetails userDetails) {
         String key = RedisKeyEnum.LOGIN_USER.toKey(userDetails.getSysUser().getId());
-        stringRedisTemplate.delete(key);
+        redisHelper.deleteKey(key);
     }
 
 
