@@ -48,6 +48,16 @@
                 <artifactId>redis-helper-starter</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>com.dingyabin</groupId>
+                <artifactId>security-data-common</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dingyabin</groupId>
+                <artifactId>api-common</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

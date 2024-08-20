@@ -5,12 +5,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingyabin.security.entity.SysUser;
 import com.dingyabin.security.mapper.SysUserMapper;
-import org.springframework.stereotype.Service;
 
 /**
  * @author 丁亚宾
  */
-@Service
 public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> {
 
 

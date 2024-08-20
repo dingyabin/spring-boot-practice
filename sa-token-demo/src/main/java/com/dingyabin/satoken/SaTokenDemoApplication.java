@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 // 优质的 spring/boot/data/security/cloud 框架中文文档尽在 => https://springdoc.cn
-@SpringBootApplication(scanBasePackages = {"com.dingyabin.satoken", "com.dingyabin.security"})
+@SpringBootApplication
 public class SaTokenDemoApplication {
 
     public static void main(String[] args) {

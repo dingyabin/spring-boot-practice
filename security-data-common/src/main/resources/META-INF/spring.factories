@@ -1,2 +1,2 @@
-org.springframework.boot.env.EnvironmentPostProcessor=\
-  com.dingyabin.security.config.YamlConfigProcessor
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dingyabin.security.config.MybatisConfig

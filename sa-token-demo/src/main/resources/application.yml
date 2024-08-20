@@ -4,6 +4,17 @@ server:
 spring:
   application:
     name: sa-token-demo
+#数据库配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/security_admin?useSSL=false&rewriteBatchedStatements=true
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 20
+      username: root
+      password: 12345678
+#redis配置
   redis:
     host: localhost
     port: 6379
@@ -14,6 +25,11 @@ spring:
         max-active: 10
         min-idle: 5
 
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:/mapper/**/*.xml
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
   # token 名称（同时也是 cookie 名称）

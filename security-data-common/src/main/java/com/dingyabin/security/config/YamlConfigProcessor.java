@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * 需要在spring.factories里配置
+ * org.springframework.boot.env.EnvironmentPostProcessor =\
+ * com.dingyabin.security.config.YamlConfigProcessor
  * @author 丁亚宾
  * Date: 2024/8/1.
  * Time:23:16
