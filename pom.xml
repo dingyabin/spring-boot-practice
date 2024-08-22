@@ -25,6 +25,7 @@
         <module>sa-token-demo</module>
         <module>redis-template-demo</module>
         <module>redis-helper-starter</module>
+        <module>spring-cache-demo</module>
     </modules>
 
 
