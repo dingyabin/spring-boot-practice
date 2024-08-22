@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class CaffeineCacheConfig {
 
     @Resource
-    private CaffeineCacheProperties caffeineCacheProperties;
+    private CaffeineCacheProperties cacheProperties;
 
     public static final String CUSTOM_CACHE_1H = "CUSTOM_CACHE_1H";
 
@@ -31,12 +31,14 @@ public class CaffeineCacheConfig {
     public CacheManager caffeineCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
         //公共默认配置
-        cacheManager.setCaffeine(buildCaffeine(caffeineCacheProperties.getDefaultMaxSize(), caffeineCacheProperties.getDefaultMinutes(), TimeUnit.MINUTES));
+        cacheManager.setCaffeine(buildCaffeine(cacheProperties.getDefaultMaxSize(), cacheProperties.getDefaultDuration(), cacheProperties.getTimeUnit()));
+
         //从配置文件中获取特定的cacheName配置
-        List<CaffeineSpecProperties> specs = caffeineCacheProperties.getSpecs();
+        List<CaffeineSpecProperties> specs = cacheProperties.getSpecs();
         if (!CollectionUtils.isEmpty(specs)) {
-            specs.forEach(spec -> cacheManager.registerCustomCache(spec.getCacheName(), buildCaffeine(spec.getMaxSize(), spec.getMinutes(), TimeUnit.SECONDS).build()));
+            specs.forEach(spec -> cacheManager.registerCustomCache(spec.getCacheName(), buildCaffeine(spec.getMaxSize(), spec.getDuration(), spec.getTimeUnit()).build()));
         }
+
         //手动指定特定的cacheName配置
         cacheManager.registerCustomCache(CUSTOM_CACHE_1H, buildCaffeine(100, 10, TimeUnit.SECONDS).build());
         return cacheManager;

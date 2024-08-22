@@ -8,12 +8,15 @@ spring:
 cache:
   caffeine:
     defaultMaxSize: 50
-    defaultMinutes: 30
+    defaultDuration: 30
+    timeUnit: MINUTES
     specs:
       - cacheName: ORDER_CACHE
         maxSize: 100
-        minutes: 10
+        duration: 10
+        timeUnit: MINUTES
 
       - cacheName: USER_CACHE
         maxSize: 200
-        minutes: 20
+        duration: 20
+        timeUnit: MINUTES

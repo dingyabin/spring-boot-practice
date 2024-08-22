@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 丁亚宾
@@ -20,8 +21,16 @@ public class CaffeineCacheProperties {
 
     private int defaultMaxSize;
 
-    private int defaultMinutes;
+    private int defaultDuration;
+
+    private TimeUnit timeUnit;
 
     private List<CaffeineSpecProperties> specs;
 
+    public TimeUnit getTimeUnit() {
+        if (this.timeUnit == null) {
+            throw new IllegalArgumentException("CaffeineCacheProperties.timeUnit必须配置！");
+        }
+        return this.timeUnit;
+    }
 }
