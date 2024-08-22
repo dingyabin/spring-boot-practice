@@ -23,7 +23,14 @@ public class CacheController {
 
     @PostMapping("/test1")
     public Result<Student> testCache(String name) {
-        Student student = cacheService.getStudent(name);
+        Student student = cacheService.getStudent1(name);
+        return Result.success(student);
+    }
+
+
+    @PostMapping("/test2")
+    public Result<Student> testCache2(String name) {
+        Student student = cacheService.getStudent2(name);
         return Result.success(student);
     }
 

@@ -21,5 +21,6 @@ public class Student {
     public Student(String name, int age) {
         this.name = name;
         this.age = age;
+        System.out.println("new了一个student: " + name);
     }
 }
