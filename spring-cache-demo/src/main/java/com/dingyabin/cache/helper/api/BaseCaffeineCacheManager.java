@@ -22,14 +22,17 @@ public abstract class BaseCaffeineCacheManager<K, V> {
         loadingCache = caffeine.build(this::generateObject);
     }
 
+    public void addObject(K k, V v) {
+        loadingCache.put(k, v);
+    }
 
-    public V getObject(K key){
+    public V getObject(K key) {
         return loadingCache.get(key);
     }
 
 
-    public void delObject(K key){
-         loadingCache.invalidate(key);
+    public void delObject(K key) {
+        loadingCache.invalidate(key);
     }
 
 
