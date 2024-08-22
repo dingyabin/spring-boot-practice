@@ -9,3 +9,11 @@ cache:
   caffeine:
     defaultMaxSize: 50
     defaultMinutes: 30
+    specs:
+      - cacheName: ORDER_CACHE
+        maxSize: 100
+        minutes: 10
+
+      - cacheName: USER_CACHE
+        maxSize: 200
+        minutes: 20
