@@ -1,7 +1,6 @@
 package com.dingyabin.cache.helper;
 
 import com.dingyabin.cache.helper.api.BaseCaffeineCacheManager;
-import com.dingyabin.cache.model.Student;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * Time:0:30
  */
 @Service
-public class StudentCacheManager extends BaseCaffeineCacheManager<String, Student> {
+public class StudentCacheManager extends BaseCaffeineCacheManager<String, Object> {
 
 
     @Override
@@ -26,8 +25,9 @@ public class StudentCacheManager extends BaseCaffeineCacheManager<String, Studen
 
 
     @Override
-    protected Student generateObject(String key) {
-        return new Student(key,10);
+    protected Object generateObject(String key) {
+        System.out.println("new了一个Object: " + key);
+        return new Object();
     }
 
 

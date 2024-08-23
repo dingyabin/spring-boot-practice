@@ -1,6 +1,5 @@
 package com.dingyabin.cache.controller;
 
-import com.dingyabin.cache.model.Student;
 import com.dingyabin.cache.service.CacheService;
 import com.dingyabin.response.Result;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,16 +21,16 @@ public class CacheController {
 
 
     @PostMapping("/test1")
-    public Result<Student> testCache(String name) {
-        Student student = cacheService.getStudent1(name);
-        return Result.success(student);
+    public Result<Object> testCache(String name) {
+        Object obj = cacheService.getObject1(name);
+        return Result.success(obj);
     }
 
 
     @PostMapping("/test2")
-    public Result<Student> testCache2(String name) {
-        Student student = cacheService.getStudent2(name);
-        return Result.success(student);
+    public Result<Object> testCache2(String name) {
+        Object obj = cacheService.getObject2(name);
+        return Result.success(obj);
     }
 
 }

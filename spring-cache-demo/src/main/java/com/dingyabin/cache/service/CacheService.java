@@ -2,7 +2,6 @@ package com.dingyabin.cache.service;
 
 import com.dingyabin.cache.config.CaffeineCacheConfig;
 import com.dingyabin.cache.helper.StudentCacheManager;
-import com.dingyabin.cache.model.Student;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -24,13 +23,14 @@ public class CacheService {
 
 
     @Cacheable(cacheNames = CaffeineCacheConfig.CUSTOM_CACHE_1H, key = "#name")
-    public Student getStudent1(String name) {
-        return new Student(name, 10);
+    public Object getObject1(String name) {
+        System.out.println("new了一个Object: " + name);
+        return new Object();
     }
 
 
 
-    public Student getStudent2(String name) {
+    public Object getObject2(String name) {
         return studentCacheManager.getObject(name);
     }
 
