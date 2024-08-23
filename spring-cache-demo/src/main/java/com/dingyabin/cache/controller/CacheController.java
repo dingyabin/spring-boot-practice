@@ -21,15 +21,15 @@ public class CacheController {
 
 
     @PostMapping("/test1")
-    public Result<Object> testCache(String name) {
-        Object obj = cacheService.getObject1(name);
+    public Result<String> testCache(String name) {
+        String obj = cacheService.getObject1(name);
         return Result.success(obj);
     }
 
 
     @PostMapping("/test2")
-    public Result<Object> testCache2(String name) {
-        Object obj = cacheService.getObject2(name);
+    public Result<String> testCache2(String name) {
+        String obj = cacheService.getObject2(name);
         return Result.success(obj);
     }
 

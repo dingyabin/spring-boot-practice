@@ -23,14 +23,14 @@ public class CacheService {
 
 
     @Cacheable(cacheNames = CaffeineCacheConfig.CUSTOM_CACHE_1H, key = "#name")
-    public Object getObject1(String name) {
-        System.out.println("new了一个Object: " + name);
-        return new Object();
+    public String getObject1(String name) {
+        System.out.println("new了一个String: " + name);
+        return new String(name);
     }
 
 
 
-    public Object getObject2(String name) {
+    public String getObject2(String name) {
         return studentCacheManager.getObject(name);
     }
 

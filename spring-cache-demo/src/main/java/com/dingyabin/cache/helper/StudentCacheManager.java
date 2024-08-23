@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * Time:0:30
  */
 @Service
-public class StudentCacheManager extends BaseCaffeineCacheManager<String, Object> {
+public class StudentCacheManager extends BaseCaffeineCacheManager<String, String> {
 
 
     @Override
@@ -25,9 +25,9 @@ public class StudentCacheManager extends BaseCaffeineCacheManager<String, Object
 
 
     @Override
-    protected Object generateObject(String key) {
-        System.out.println("new了一个Object: " + key);
-        return new Object();
+    protected String generateObject(String key) {
+        System.out.println("new了一个String: " + key);
+        return new String(key);
     }
 
 
