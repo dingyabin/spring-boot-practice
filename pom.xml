@@ -26,6 +26,7 @@
         <module>redis-template-demo</module>
         <module>redis-helper-starter</module>
         <module>spring-cache-demo</module>
+        <module>spring-nacos-demo</module>
     </modules>
 
 
