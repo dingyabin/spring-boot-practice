@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * Time:23:21
  */
 @Configuration
-public class CaffeineCacheConfig {
+public class CaffeineSpringCacheConfig {
 
     @Resource
     private CaffeineCacheProperties cacheProperties;

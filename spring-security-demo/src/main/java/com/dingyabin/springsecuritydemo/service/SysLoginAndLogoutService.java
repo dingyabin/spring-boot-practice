@@ -57,7 +57,7 @@ public class SysLoginAndLogoutService {
      */
     private void cacheSecurityUser(SecurityUserDetails userDetails) {
         String key = RedisKeyEnum.LOGIN_USER.toKey(userDetails.getSysUser().getId());
-        redisHelper.setCache(key, new SecurityUserCache(userDetails).clearPwd(), JwtUtils.TOKEN_TIME_OUT, TimeUnit.HOURS);
+        redisHelper.setCacheObject(key, new SecurityUserCache(userDetails).clearPwd(), JwtUtils.TOKEN_TIME_OUT, TimeUnit.HOURS);
     }
 
     /**

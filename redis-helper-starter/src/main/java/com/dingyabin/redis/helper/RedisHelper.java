@@ -41,12 +41,12 @@ public class RedisHelper extends AbstractRedisHelper {
     }
 
 
-    public void setCache(String key, Object value, Integer timeout) {
-        this.setCache(key, value, timeout, TimeUnit.SECONDS);
+    public void setCacheObject(String key, Object value, Integer timeout) {
+        this.setCacheObject(key, value, timeout, TimeUnit.SECONDS);
     }
 
 
-    public void setCache(String key, Object value, Integer timeout, TimeUnit timeUnit) {
+    public void setCacheObject(String key, Object value, Integer timeout, TimeUnit timeUnit) {
         stringOperations.set(key, toJson(value), (long) timeout, timeUnit);
     }
 

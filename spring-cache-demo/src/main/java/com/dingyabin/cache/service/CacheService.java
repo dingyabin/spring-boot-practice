@@ -1,6 +1,6 @@
 package com.dingyabin.cache.service;
 
-import com.dingyabin.cache.config.CaffeineCacheConfig;
+import com.dingyabin.cache.config.CaffeineSpringCacheConfig;
 import com.dingyabin.cache.helper.StudentCacheManager;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,7 +22,7 @@ public class CacheService {
 
 
 
-    @Cacheable(cacheNames = CaffeineCacheConfig.CUSTOM_CACHE_1H, key = "#name")
+    @Cacheable(cacheNames = CaffeineSpringCacheConfig.CUSTOM_CACHE_1H, key = "#name")
     public String getObject1(String name) {
         System.out.println("new了一个String: " + name);
         return new String(name);

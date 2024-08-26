@@ -40,6 +40,10 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.dingyabin</groupId>
+            <artifactId>redis-helper-starter</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
