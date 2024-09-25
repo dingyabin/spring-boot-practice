@@ -11,4 +11,7 @@ spring:
         namespace: TEST
         file-extension: yaml
         group: SPRING-NACOS-DEMO
-
+        shared-configs:
+          - dataId: shared-config.yml
+            group: SHARED_GROUP
+            refresh: true

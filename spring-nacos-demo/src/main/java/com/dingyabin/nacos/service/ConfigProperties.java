@@ -1,7 +1,6 @@
 package com.dingyabin.nacos.service;
 
 import lombok.Data;
-import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
  * Time:21:29
  */
 @Data
-@ToString
 @Component
 @ConfigurationProperties(prefix = "tom")
 public class ConfigProperties {
