@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -56,7 +58,8 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
         Long nextId = rangeRecord.nextId();
         //如果超过阈值，则后台刷新
         if ((rangeRecord.getMaxId() - nextId) < rangeRecord.getStep() * refreshThreshold) {
-            //refreshRangeIds(bizType);
+            //启动后台任务刷新本地ids
+
         }
         return nextId;
     }
@@ -121,6 +124,34 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
             return startNotInclude.incrementAndGet();
         }
 
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    private static class SerialRangeRecord {
+
+        private List<RangeRecord>  rangeRecords = new CopyOnWriteArrayList<>();
+
+
+        public void addRangeRecord(RangeRecord rangeRecord){
+            rangeRecords.add(rangeRecord);
+        }
+
+        public Long nextId() {
+            Iterator<RangeRecord> iterator = rangeRecords.iterator();
+            while (iterator.hasNext()) {
+                RangeRecord rangeRecord = iterator.next();
+                Long nextId = rangeRecord.nextId();
+                if (nextId > rangeRecord.getMaxId()) {
+                    iterator.remove();
+                    continue;
+                }
+                return nextId;
+            }
+            return null;
+        }
     }
 
 }
