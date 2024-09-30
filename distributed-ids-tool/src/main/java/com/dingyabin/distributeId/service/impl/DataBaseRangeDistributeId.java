@@ -57,9 +57,9 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
             serialRangeRecord = atomicLongMap.get(bizType);
             nextId = serialRangeRecord.nextId();
         }
-        //如果超过阈值，则后台刷新
+        //如果超过阈值，则后台预取下一批id
         if (serialRangeRecord.shouldPrefetch()) {
-            //启动后台任务刷新本地ids
+            //启动后台任务预取下一批id
             executorService.submit(() -> {
                 prefetchRangeIds(bizType);
             });
