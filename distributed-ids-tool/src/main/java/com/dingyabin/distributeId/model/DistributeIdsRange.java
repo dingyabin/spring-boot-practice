@@ -38,6 +38,9 @@ public class DistributeIdsRange implements Serializable {
     private Date updateTime;
 
 
+    private Long version;
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
