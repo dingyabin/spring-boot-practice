@@ -58,7 +58,7 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
             nextId = serialRangeRecord.nextId();
         }
         //如果超过阈值，则后台刷新
-        if (serialRangeRecord.getRangeRecordSize() == 1) {
+        if (serialRangeRecord.shouldPrefetch()) {
             //启动后台任务刷新本地ids
             executorService.submit(() -> {
                 prefetchRangeIds(bizType);
@@ -89,11 +89,14 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     }
 
 
-
+    /**
+     * 预取下一批id
+     * @param bizType bizType
+     */
     private synchronized void prefetchRangeIds(String bizType) {
-        //防止别的线程已经加载过了
+        //防止别的线程已经预取过了
         SerialRangeRecord serialRangeRecord = atomicLongMap.get(bizType);
-        if (serialRangeRecord.getRangeRecordSize() > 1) {
+        if (!serialRangeRecord.shouldPrefetch()) {
             return;
         }
         loadMemoryIds(bizType);
@@ -136,6 +139,10 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
 
         private Long maxId;
 
+        public Long currentId(){
+            return startNotInclude.get();
+        }
+
         public Long nextId() {
             return startNotInclude.incrementAndGet();
         }
@@ -156,9 +163,17 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
         }
 
 
-        public int getRangeRecordSize() {
+        private int getRangeRecordSize() {
             return rangeRecords.size();
         }
+
+
+        public boolean shouldPrefetch(){
+            boolean onlyOneRangeRecord = getRangeRecordSize() == 1;
+            RangeRecord record = rangeRecords.get(0);
+            return onlyOneRangeRecord && (record.getMaxId() - record.currentId()) < record.getStep() * 0.3;
+        }
+
 
         public Long nextId() {
             for (RangeRecord rangeRecord : rangeRecords) {
