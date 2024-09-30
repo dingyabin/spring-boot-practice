@@ -27,6 +27,7 @@
         <module>redis-helper-starter</module>
         <module>spring-cache-demo</module>
         <module>spring-nacos-demo</module>
+        <module>distributed-ids-tool</module>
     </modules>
 
     <name>spring-boot-practice</name>
