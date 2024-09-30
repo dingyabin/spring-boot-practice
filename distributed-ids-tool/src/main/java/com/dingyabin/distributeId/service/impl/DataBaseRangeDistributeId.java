@@ -15,8 +15,7 @@ import javax.annotation.Resource;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -27,9 +26,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class DataBaseRangeDistributeId implements IDistributeId, InitializingBean {
 
-    private final double refreshThreshold = 0.3;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
-    private Map<String, RangeRecord> atomicLongMap = new ConcurrentHashMap<>();
+    private Map<String, SerialRangeRecord> atomicLongMap = new ConcurrentHashMap<>();
 
     @Resource
     private DistributeIdsRangeService distributeIdsRangeService;
@@ -49,17 +48,21 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
 
     @Override
     public Long nextId(String bizType) {
-        RangeRecord rangeRecord = atomicLongMap.get(bizType);
-        if (rangeRecord.nextId() > rangeRecord.getMaxId()) {
+        SerialRangeRecord serialRangeRecord = atomicLongMap.get(bizType);
+        //号段用完了,需要刷新
+        Long nextId = serialRangeRecord.nextId();
+        if (nextId == null) {
             //刷新本地ids
             refreshRangeIds(bizType);
-            rangeRecord = atomicLongMap.get(bizType);
+            serialRangeRecord = atomicLongMap.get(bizType);
+            nextId = serialRangeRecord.nextId();
         }
-        Long nextId = rangeRecord.nextId();
         //如果超过阈值，则后台刷新
-        if ((rangeRecord.getMaxId() - nextId) < rangeRecord.getStep() * refreshThreshold) {
+        if (serialRangeRecord.getRangeRecordSize() == 1) {
             //启动后台任务刷新本地ids
-
+            executorService.submit(() -> {
+                prefetchRangeIds(bizType);
+            });
         }
         return nextId;
     }
@@ -71,40 +74,53 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
             return;
         }
         for (DistributeIdsRange idsRange : totalDistributeIdsRanges) {
-            refreshRangeIds(idsRange.getBizType());
+            loadMemoryIds(idsRange.getBizType());
         }
     }
 
 
-
-
     private synchronized void refreshRangeIds(String bizType) {
         //DLC双重检查，防止别的线程刚刚已经刷新过了
-        RangeRecord curRangeRecord = atomicLongMap.get(bizType);
-        if (curRangeRecord != null && curRangeRecord.nextId() < curRangeRecord.getMaxId()) {
+        SerialRangeRecord curRangeRecord = atomicLongMap.get(bizType);
+        if (curRangeRecord != null && curRangeRecord.nextId() != null) {
             return;
         }
+        loadMemoryIds(bizType);
+    }
+
+
+
+    private synchronized void prefetchRangeIds(String bizType) {
+        //防止别的线程已经加载过了
+        SerialRangeRecord serialRangeRecord = atomicLongMap.get(bizType);
+        if (serialRangeRecord.getRangeRecordSize() > 1) {
+            return;
+        }
+        loadMemoryIds(bizType);
+    }
+
+
+
+    private void loadMemoryIds(String bizType) {
         while (true) {
             DistributeIdsRange currentRange = distributeIdsRangeService.getRangeByBiz(bizType);
             int updateCount = distributeIdsRangeService.updateRangeStep(currentRange);
             if (updateCount == 0) {
                 continue;
             }
-            RangeRecord newRangeRecord = new RangeRecord(new AtomicLong(currentRange.getMaxId()), currentRange.getStep(), currentRange.getMaxId() + currentRange.getStep());
-            atomicLongMap.put(currentRange.getBizType(), newRangeRecord);
-//
-//                atomicLongMap.compute(bizType, (key, rangeRecord) -> {
-//                    if (rangeRecord == null){
-//                        return new RangeRecord(new AtomicLong(currentRange.getMaxId()), currentRange.getMaxId() + currentRange.getStep());
-//                    }
-//                    rangeRecord.setMaxId(  );
-//                    return rangeRecord;
-//                });
+            atomicLongMap.compute(bizType, (key, oldSerialRangeRecord) -> {
+                RangeRecord rangeRecord = new RangeRecord(new AtomicLong(currentRange.getMaxId()), currentRange.getStep(), currentRange.getMaxId() + currentRange.getStep());
+                if (oldSerialRangeRecord == null) {
+                    SerialRangeRecord newSerialRangeRecord = new SerialRangeRecord();
+                    newSerialRangeRecord.addRangeRecord(rangeRecord);
+                    return newSerialRangeRecord;
+                }
+                oldSerialRangeRecord.addRangeRecord(rangeRecord);
+                return oldSerialRangeRecord;
+            });
             break;
         }
     }
-
-
 
 
 
@@ -132,26 +148,32 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     @Accessors(chain = true)
     private static class SerialRangeRecord {
 
-        private List<RangeRecord>  rangeRecords = new CopyOnWriteArrayList<>();
+        private List<RangeRecord> rangeRecords = new CopyOnWriteArrayList<>();
 
 
-        public void addRangeRecord(RangeRecord rangeRecord){
+        public void addRangeRecord(RangeRecord rangeRecord) {
             rangeRecords.add(rangeRecord);
         }
 
+
+        public int getRangeRecordSize() {
+            return rangeRecords.size();
+        }
+
         public Long nextId() {
-            Iterator<RangeRecord> iterator = rangeRecords.iterator();
-            while (iterator.hasNext()) {
-                RangeRecord rangeRecord = iterator.next();
+            for (RangeRecord rangeRecord : rangeRecords) {
                 Long nextId = rangeRecord.nextId();
+                //号段已经用完了，删除这个号段, 从下一个号段开始取
                 if (nextId > rangeRecord.getMaxId()) {
-                    iterator.remove();
+                    rangeRecords.remove(rangeRecord);
                     continue;
                 }
                 return nextId;
             }
+            //所有号段都不可用
             return null;
         }
+
     }
 
 }
