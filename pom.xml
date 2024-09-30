@@ -29,7 +29,6 @@
         <module>spring-nacos-demo</module>
     </modules>
 
-
     <name>spring-boot-practice</name>
 
     <properties>
