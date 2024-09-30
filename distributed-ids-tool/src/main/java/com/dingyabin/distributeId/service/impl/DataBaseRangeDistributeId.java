@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Administrator
@@ -26,9 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class DataBaseRangeDistributeId implements IDistributeId, InitializingBean {
 
-    private final double refreshThreshold = 0.7;
-
-    private ReentrantLock lock = new ReentrantLock();
+    private final double refreshThreshold = 0.3;
 
     private Map<String, RangeRecord> atomicLongMap = new ConcurrentHashMap<>();
 
@@ -51,13 +48,15 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     @Override
     public Long nextId(String bizType) {
         RangeRecord rangeRecord = atomicLongMap.get(bizType);
-        Long nextId = rangeRecord.nextId();
-        if (nextId > rangeRecord.getMaxId()) {
-            throw new RuntimeException("异常,请稍后再试!");
-        }
-        //如果超过阈值，则后台刷新
-        if (nextId >  refreshThreshold * rangeRecord.getMaxId() ) {
+        if (rangeRecord.nextId() > rangeRecord.getMaxId()) {
+            //刷新本地ids
             refreshRangeIds(bizType);
+            rangeRecord = atomicLongMap.get(bizType);
+        }
+        Long nextId = rangeRecord.nextId();
+        //如果超过阈值，则后台刷新
+        if ((rangeRecord.getMaxId() - nextId) < rangeRecord.getStep() * refreshThreshold) {
+            //refreshRangeIds(bizType);
         }
         return nextId;
     }
@@ -74,20 +73,22 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     }
 
 
-    private void refreshRangeIds(String bizType) {
-        //先尝试获取锁, 失败的话意味着有线程正在执行刷新任务
-        if (!lock.tryLock()) {
+
+
+    private synchronized void refreshRangeIds(String bizType) {
+        //DLC双重检查，防止别的线程刚刚已经刷新过了
+        RangeRecord curRangeRecord = atomicLongMap.get(bizType);
+        if (curRangeRecord != null && curRangeRecord.nextId() < curRangeRecord.getMaxId()) {
             return;
         }
-        try {
-            while (true) {
-                DistributeIdsRange currentRange = distributeIdsRangeService.getRangeByBiz(bizType);
-                int updateCount = distributeIdsRangeService.updateRangeStep(currentRange);
-                if (updateCount == 0) {
-                    continue;
-                }
-                RangeRecord rangeRecord = new RangeRecord(new AtomicLong(currentRange.getMaxId()), currentRange.getMaxId() + currentRange.getStep());
-                atomicLongMap.put(currentRange.getBizType(), rangeRecord);
+        while (true) {
+            DistributeIdsRange currentRange = distributeIdsRangeService.getRangeByBiz(bizType);
+            int updateCount = distributeIdsRangeService.updateRangeStep(currentRange);
+            if (updateCount == 0) {
+                continue;
+            }
+            RangeRecord newRangeRecord = new RangeRecord(new AtomicLong(currentRange.getMaxId()), currentRange.getStep(), currentRange.getMaxId() + currentRange.getStep());
+            atomicLongMap.put(currentRange.getBizType(), newRangeRecord);
 //
 //                atomicLongMap.compute(bizType, (key, rangeRecord) -> {
 //                    if (rangeRecord == null){
@@ -96,12 +97,12 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
 //                    rangeRecord.setMaxId(  );
 //                    return rangeRecord;
 //                });
-                break;
-            }
-        } finally {
-            lock.unlock();
+            break;
         }
     }
+
+
+
 
 
     @Getter
@@ -111,6 +112,8 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     private static class RangeRecord {
 
         private AtomicLong startNotInclude;
+
+        private Integer step;
 
         private Long maxId;
 
