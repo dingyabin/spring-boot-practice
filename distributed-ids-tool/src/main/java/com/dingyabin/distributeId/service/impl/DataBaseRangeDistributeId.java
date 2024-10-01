@@ -61,13 +61,13 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
         Long maxId;
         //内存里的号码段全部用完了,预取线程还没有刷新出来，需要马上刷新一批出来
         if ((maxId = serialRangeRecord.nextId()) == null) {
-            preFetchMemoryIds(bizType);
-            return serialRangeRecord.nextId();
+            preFetchMemoryIds(bizType, "1");
+            maxId = serialRangeRecord.nextId();
         }
         //需要预取下一批次了
         if (serialRangeRecord.shouldPrefetch()) {
             executorService.submit(() -> {
-                preFetchMemoryIds(bizType);
+                preFetchMemoryIds(bizType, "n");
             });
         }
         return maxId;
@@ -91,15 +91,12 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     /**
      * 预取下一批号码段
      */
-    private void preFetchMemoryIds(String bizType) {
-        DistributeIdsRange currentRange = distributeIdsRangeService.getRangeByBiz(bizType);
-        if (currentRange == null) {
-            return;
-        }
+    private void preFetchMemoryIds(String bizType, String flag) {
         synchronized (mutex) {
             SerialRangeRecord curRangeRecord = atomicLongMap.get(bizType);
             //只有需要刷新的号段业务才执行任务
             if (curRangeRecord.shouldPrefetch()) {
+                DistributeIdsRange currentRange = distributeIdsRangeService.getRangeByBiz(bizType);
                 loadMemoryIds(currentRange);
             }
         }
