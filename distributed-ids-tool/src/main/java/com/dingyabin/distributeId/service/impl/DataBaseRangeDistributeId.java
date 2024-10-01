@@ -43,13 +43,6 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     @Override
     public void afterPropertiesSet() throws Exception {
         initMemoryIds();
-        executorService.submit(()-> {
-            try {
-                preFetchMemoryIds();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
     }
 
 
@@ -66,16 +59,16 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
             throw new RuntimeException("暂不支持的业务类型!");
         }
         Long maxId;
-        //内存里的号码段全部用完了,需要马上刷新一批出来
+        //内存里的号码段全部用完了,预取线程还没有刷新出来，需要马上刷新一批出来
         if ((maxId = serialRangeRecord.nextId()) == null) {
-
-
+            preFetchMemoryIds(bizType);
+            return serialRangeRecord.nextId();
         }
         //需要预取下一批次了
         if (serialRangeRecord.shouldPrefetch()) {
-            synchronized (mutex) {
-                mutex.notifyAll();
-            }
+            executorService.submit(() -> {
+                preFetchMemoryIds(bizType);
+            });
         }
         return maxId;
     }
@@ -97,24 +90,17 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
 
     /**
      * 预取下一批号码段
-     * @throws InterruptedException ""
      */
-    private void preFetchMemoryIds() throws InterruptedException {
-        while (true) {
-            List<DistributeIdsRange> totalDistributeIdsRanges = distributeIdsRangeService.getTotalDistributeIdsRanges();
-            if (CollectionUtils.isEmpty(totalDistributeIdsRanges)) {
-                return;
-            }
-            synchronized (mutex) {
-                for (DistributeIdsRange idsRange : totalDistributeIdsRanges) {
-                    SerialRangeRecord curRangeRecord = atomicLongMap.get(idsRange.getBizType());
-                    //只有需要刷新的号段业务才执行任务
-                    if (curRangeRecord.shouldPrefetch()) {
-                        loadMemoryIds(idsRange);
-                    }
-                }
-                //执行完一次任务后，休息
-                mutex.wait();
+    private void preFetchMemoryIds(String bizType) {
+        DistributeIdsRange currentRange = distributeIdsRangeService.getRangeByBiz(bizType);
+        if (currentRange == null) {
+            return;
+        }
+        synchronized (mutex) {
+            SerialRangeRecord curRangeRecord = atomicLongMap.get(bizType);
+            //只有需要刷新的号段业务才执行任务
+            if (curRangeRecord.shouldPrefetch()) {
+                loadMemoryIds(currentRange);
             }
         }
     }
