@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author 丁亚宾
@@ -15,6 +18,8 @@ import javax.annotation.Resource;
  */
 @RestController
 public class IdController {
+
+    ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     @Resource
     private SnowflakeDistributeId snowflakeDistributeId;
@@ -31,5 +36,19 @@ public class IdController {
     @GetMapping("/get2")
     public Result<Long> idTest2() {
         return Result.success(dataBaseRangeDistributeId.nextId());
+    }
+
+    @GetMapping("/get3")
+    public Result<Long> idTest3() {
+        for (int i = 0; i < 10000; i++) {
+            executorService.submit(()->{
+                Long nextId = dataBaseRangeDistributeId.nextId();
+                //objects.add(nextId);
+                if (nextId == null) {
+                    System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                }
+            });
+        }
+        return Result.success("dataBaseRangeDistributeId.nextId()");
     }
 }
