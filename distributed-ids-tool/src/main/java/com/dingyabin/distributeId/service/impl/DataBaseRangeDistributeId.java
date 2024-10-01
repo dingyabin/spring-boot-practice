@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -26,6 +25,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class DataBaseRangeDistributeId implements IDistributeId, InitializingBean {
 
+    private final Object mutex = new Object();
+
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     private Map<String, SerialRangeRecord> atomicLongMap = new ConcurrentHashMap<>();
@@ -36,7 +37,13 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        initMemoryIds();
+        executorService.submit(()-> {
+            try {
+                initMemoryIds();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 
@@ -49,76 +56,80 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     @Override
     public Long nextId(String bizType) {
         SerialRangeRecord serialRangeRecord = atomicLongMap.get(bizType);
-        //号段用完了,需要刷新
-        Long nextId = serialRangeRecord.nextId();
-        if (nextId == null) {
-            //刷新本地ids
-            refreshRangeIds(bizType);
-            serialRangeRecord = atomicLongMap.get(bizType);
-            nextId = serialRangeRecord.nextId();
+        Long maxId = null;
+        if (serialRangeRecord == null || (maxId = serialRangeRecord.nextId()) == null || serialRangeRecord.shouldPrefetch()) {
+            synchronized(mutex) {
+                mutex.notifyAll();
+            }
+
         }
-        //如果超过阈值，则后台预取下一批id
-        if (serialRangeRecord.shouldPrefetch()) {
-            //启动后台任务预取下一批id
-            executorService.submit(() -> {
-                prefetchRangeIds(bizType);
-            });
-        }
-        return nextId;
+        return maxId;
     }
 
 
-    private void initMemoryIds() {
-        List<DistributeIdsRange> totalDistributeIdsRanges = distributeIdsRangeService.getTotalDistributeIdsRanges();
-        if (CollectionUtils.isEmpty(totalDistributeIdsRanges)) {
-            return;
-        }
-        for (DistributeIdsRange idsRange : totalDistributeIdsRanges) {
-            loadMemoryIds(idsRange.getBizType());
-        }
-    }
-
-
-    private synchronized void refreshRangeIds(String bizType) {
-        //DLC双重检查，防止别的线程刚刚已经刷新过了
-        SerialRangeRecord curRangeRecord = atomicLongMap.get(bizType);
-        if (curRangeRecord != null && curRangeRecord.nextId() != null) {
-            return;
-        }
-        loadMemoryIds(bizType);
-    }
-
-
-    /**
-     * 预取下一批id
-     * @param bizType bizType
-     */
-    private synchronized void prefetchRangeIds(String bizType) {
-        //防止别的线程已经预取过了
-        SerialRangeRecord serialRangeRecord = atomicLongMap.get(bizType);
-        if (!serialRangeRecord.shouldPrefetch()) {
-            return;
-        }
-        loadMemoryIds(bizType);
-    }
-
-
-
-    private void loadMemoryIds(String bizType) {
+    private void initMemoryIds() throws InterruptedException {
         while (true) {
-            DistributeIdsRange currentRange = distributeIdsRangeService.getRangeByBiz(bizType);
+            List<DistributeIdsRange> totalDistributeIdsRanges = distributeIdsRangeService.getTotalDistributeIdsRanges();
+            if (CollectionUtils.isEmpty(totalDistributeIdsRanges)) {
+                return;
+            }
+            synchronized (mutex) {
+                for (DistributeIdsRange idsRange : totalDistributeIdsRanges) {
+                    SerialRangeRecord curRangeRecord = atomicLongMap.get(idsRange.getBizType());
+                    //只有需要刷新的号段业务才执行任务
+                    if (curRangeRecord == null || curRangeRecord.shouldPrefetch()) {
+                        loadMemoryIds(idsRange);
+                    }
+                }
+                //执行完一次任务后，休息
+                mutex.wait();
+            }
+        }
+    }
+
+
+//    private synchronized void refreshRangeIds(String bizType) {
+//        //DLC双重检查，防止别的线程刚刚已经刷新过了
+//        SerialRangeRecord curRangeRecord = atomicLongMap.get(bizType);
+//        if (curRangeRecord != null && curRangeRecord.nextId() != null) {
+//            return;
+//        }
+//        loadMemoryIds(bizType);
+//    }
+//
+
+//    /**
+//     * 预取下一批id
+//     * @param bizType bizType
+//     */
+//    private synchronized void prefetchRangeIds(String bizType) {
+//        //防止别的线程已经预取过了
+//        SerialRangeRecord serialRangeRecord = atomicLongMap.get(bizType);
+//        if (!serialRangeRecord.shouldPrefetch()) {
+//            return;
+//        }
+//        loadMemoryIds(bizType);
+//    }
+
+
+    private void loadMemoryIds(DistributeIdsRange currentRange) {
+        while (true) {
             int updateCount = distributeIdsRangeService.updateRangeStep(currentRange);
+            //没有更新成功,重新拉取最新的
             if (updateCount == 0) {
+                currentRange = distributeIdsRangeService.getRangeByBiz(currentRange.getBizType());
                 continue;
             }
-            atomicLongMap.compute(bizType, (key, oldSerialRangeRecord) -> {
-                RangeRecord rangeRecord = new RangeRecord(new AtomicLong(currentRange.getMaxId()), currentRange.getStep(), currentRange.getMaxId() + currentRange.getStep());
+            Long maxId = currentRange.getMaxId();
+            Integer step = currentRange.getStep();
+            atomicLongMap.compute(currentRange.getBizType(), (key, oldSerialRangeRecord) -> {
+                RangeRecord rangeRecord = new RangeRecord(new AtomicLong(maxId), step, maxId + step);
                 if (oldSerialRangeRecord == null) {
                     SerialRangeRecord newSerialRangeRecord = new SerialRangeRecord();
-                    newSerialRangeRecord.addRangeRecord(rangeRecord);
+                    newSerialRangeRecord.offerRangeRecord(rangeRecord);
                     return newSerialRangeRecord;
                 }
-                oldSerialRangeRecord.addRangeRecord(rangeRecord);
+                oldSerialRangeRecord.offerRangeRecord(rangeRecord);
                 return oldSerialRangeRecord;
             });
             break;
@@ -155,13 +166,11 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     @Accessors(chain = true)
     private static class SerialRangeRecord {
 
-        private List<RangeRecord> rangeRecords = new CopyOnWriteArrayList<>();
+        private LinkedBlockingQueue<RangeRecord> rangeRecords = new LinkedBlockingQueue<>(2);
 
-
-        public void addRangeRecord(RangeRecord rangeRecord) {
-            rangeRecords.add(rangeRecord);
+        public boolean offerRangeRecord(RangeRecord rangeRecord) {
+           return rangeRecords.offer(rangeRecord);
         }
-
 
         private int getRangeRecordSize() {
             return rangeRecords.size();
@@ -169,9 +178,8 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
 
 
         public boolean shouldPrefetch(){
-            boolean onlyOneRangeRecord = getRangeRecordSize() == 1;
-            RangeRecord record = rangeRecords.get(0);
-            return onlyOneRangeRecord && (record.getMaxId() - record.currentId()) < record.getStep() * 0.3;
+            RangeRecord record = rangeRecords.peek();
+            return record == null || ((getRangeRecordSize() == 1) && (record.getMaxId() - record.currentId()) < record.getStep() * 0.3);
         }
 
 
