@@ -134,6 +134,7 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
                 MemoryIdsRefreshContext refreshContext = MemoryIdsRefreshContext.instance().rangeRecord(rangeRecord).currentRange(currentRange);
                 callback.accept(refreshContext);
             }
+            //把从数据库加载到的号码段放入内存
             atomicLongMap.compute(currentRange.getBizType(), (key, oldSerialRangeRecord) -> {
                 if (oldSerialRangeRecord == null) {
                     SerialRangeRecord newSerialRangeRecord = new SerialRangeRecord(PRE_FETCH_THRESHOLD);
