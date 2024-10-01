@@ -1,12 +1,11 @@
 package com.dingyabin.distributeId.service.impl;
 
+import com.dingyabin.distributeId.context.MemoryIdsRefreshContext;
+import com.dingyabin.distributeId.context.RangeRecord;
+import com.dingyabin.distributeId.context.SerialRangeRecord;
 import com.dingyabin.distributeId.model.DistributeIdsRange;
 import com.dingyabin.distributeId.service.DistributeIdsRangeService;
 import com.dingyabin.distributeId.service.api.IDistributeId;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -17,8 +16,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 /**
  * @author Administrator
@@ -61,13 +60,12 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
         Long maxId;
         //内存里的号码段全部用完了,预取线程还没有刷新出来，需要马上刷新一批出来
         if ((maxId = serialRangeRecord.nextId()) == null) {
-            preFetchMemoryIds(bizType, "1");
-            maxId = serialRangeRecord.nextId();
+            maxId = fetchMemoryIdsAndGet(bizType);
         }
         //需要预取下一批次了
         if (serialRangeRecord.shouldPrefetch()) {
             executorService.submit(() -> {
-                preFetchMemoryIds(bizType, "n");
+                preFetchMemoryIds(bizType);
             });
         }
         return maxId;
@@ -83,7 +81,7 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
             return;
         }
         for (DistributeIdsRange idsRange : totalDistributeIdsRanges) {
-            loadMemoryIds(idsRange);
+            loadMemoryIds(idsRange, null);
         }
     }
 
@@ -91,19 +89,38 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     /**
      * 预取下一批号码段
      */
-    private void preFetchMemoryIds(String bizType, String flag) {
+    private void preFetchMemoryIds(String bizType) {
         synchronized (mutex) {
             SerialRangeRecord curRangeRecord = atomicLongMap.get(bizType);
-            //只有需要刷新的号段业务才执行任务
+            //DLC双重检查，只有需要刷新的号段业务才执行任务
             if (curRangeRecord.shouldPrefetch()) {
                 DistributeIdsRange currentRange = distributeIdsRangeService.getRangeByBiz(bizType);
-                loadMemoryIds(currentRange);
+                loadMemoryIds(currentRange, null);
             }
         }
     }
 
+    /**
+     * 预取下一批号码段,并且返回一个可用的id
+     */
+    private Long fetchMemoryIdsAndGet(String bizType) {
+        synchronized (mutex) {
+            SerialRangeRecord curRangeRecord = atomicLongMap.get(bizType);
+            Long nextId = curRangeRecord.nextId();
+            if (nextId != null) {
+                return nextId;
+            }
+            DistributeIdsRange currentRange = distributeIdsRangeService.getRangeByBiz(bizType);
+            MemoryIdsRefreshContext context = MemoryIdsRefreshContext.instance();
+            loadMemoryIds(currentRange, refreshContext -> {
+                context.nextId(refreshContext.rangeRecord().nextId());
+            });
+            return context.nextId();
+        }
+    }
 
-    private void loadMemoryIds(DistributeIdsRange currentRange) {
+
+    private void loadMemoryIds(DistributeIdsRange currentRange, Consumer<MemoryIdsRefreshContext> callback) {
         while (true) {
             int updateCount = distributeIdsRangeService.updateRangeStep(currentRange);
             //没有更新成功,重新拉取最新的
@@ -111,89 +128,23 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
                 currentRange = distributeIdsRangeService.getRangeByBiz(currentRange.getBizType());
                 continue;
             }
-            Long maxId = currentRange.getMaxId();
-            Integer step = currentRange.getStep();
+            RangeRecord rangeRecord = new RangeRecord(new AtomicLong(currentRange.getMaxId()), currentRange.getStep(), currentRange.getMaxId() + currentRange.getStep());
+           //回调函数不为空，则执行回调函数
+            if (callback != null) {
+                MemoryIdsRefreshContext refreshContext = MemoryIdsRefreshContext.instance().rangeRecord(rangeRecord).currentRange(currentRange);
+                callback.accept(refreshContext);
+            }
             atomicLongMap.compute(currentRange.getBizType(), (key, oldSerialRangeRecord) -> {
-                RangeRecord rangeRecord = new RangeRecord(new AtomicLong(maxId), step, maxId + step);
                 if (oldSerialRangeRecord == null) {
                     SerialRangeRecord newSerialRangeRecord = new SerialRangeRecord(PRE_FETCH_THRESHOLD);
-                    newSerialRangeRecord.offerRangeRecord(rangeRecord);
+                    newSerialRangeRecord.addRangeRecord(rangeRecord);
                     return newSerialRangeRecord;
                 }
-                oldSerialRangeRecord.offerRangeRecord(rangeRecord);
+                oldSerialRangeRecord.addRangeRecord(rangeRecord);
                 return oldSerialRangeRecord;
             });
             break;
         }
-    }
-
-
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @AllArgsConstructor
-    private static class RangeRecord {
-
-        private AtomicLong startNotInclude;
-
-        private Integer step;
-
-        private Long maxId;
-
-        public Long currentId(){
-            return startNotInclude.get();
-        }
-
-        public Long nextId() {
-            return startNotInclude.incrementAndGet();
-        }
-
-    }
-
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    private static class SerialRangeRecord {
-
-        private double prefetchThreshold;
-
-        private LinkedBlockingQueue<RangeRecord> rangeRecords = new LinkedBlockingQueue<>(2);
-
-        public SerialRangeRecord(double prefetchThreshold) {
-            this.prefetchThreshold = prefetchThreshold;
-        }
-
-        public boolean offerRangeRecord(RangeRecord rangeRecord) {
-           return rangeRecords.offer(rangeRecord);
-        }
-
-        private int getRangeRecordSize() {
-            return rangeRecords.size();
-        }
-
-
-        public boolean shouldPrefetch(){
-            RangeRecord record = rangeRecords.peek();
-            return record == null || ((getRangeRecordSize() == 1) && (record.getMaxId() - record.currentId()) < record.getStep() * prefetchThreshold);
-        }
-
-
-        public Long nextId() {
-            for (RangeRecord rangeRecord : rangeRecords) {
-                Long nextId = rangeRecord.nextId();
-                //号段已经用完了，删除这个号段, 从下一个号段开始取
-                if (nextId > rangeRecord.getMaxId()) {
-                    rangeRecords.remove(rangeRecord);
-                    continue;
-                }
-                return nextId;
-            }
-            //所有号段都不可用
-            return null;
-        }
-
     }
 
 }

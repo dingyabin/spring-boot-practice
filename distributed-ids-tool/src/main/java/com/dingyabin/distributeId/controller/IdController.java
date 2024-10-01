@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 @RestController
 public class IdController {
 
-    ExecutorService executorService = Executors.newFixedThreadPool(4);
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     @Resource
     private SnowflakeDistributeId snowflakeDistributeId;
@@ -40,7 +40,7 @@ public class IdController {
 
     @GetMapping("/get3")
     public Result<Long> idTest3() {
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 50000; i++) {
             executorService.submit(()->{
                 Long nextId = dataBaseRangeDistributeId.nextId();
                 //objects.add(nextId);
