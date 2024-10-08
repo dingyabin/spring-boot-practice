@@ -7,13 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.Future;
+import java.util.stream.IntStream;
 
 /**
  * @author 丁亚宾
@@ -41,23 +39,31 @@ public class IdController {
     }
 
     @GetMapping("/get3")
-    public Result<Long> dataBaseRangeDistributeIdBathTest() throws InterruptedException {
+    public Result<Integer> dataBaseRangeDistributeIdBathTest() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         Set<Object> objectSet = Collections.synchronizedSet(new HashSet<>());
+        List<Future<?>> futures = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            executorService.submit(() -> {
+            Future<?> submit = executorService.submit(() -> {
                 for (int j = 0; j < 5000; j++) {
                     Long nextId = dataBaseRangeDistributeId.nextId();
-                    objectSet.add(nextId);
                     if (nextId == null) {
                         System.out.println("--------出现空值，测试失败------------");
+                    } else {
+                        objectSet.add(nextId);
                     }
                 }
             });
+            futures.add(submit);
         }
-        executorService.shutdown();
-        executorService.awaitTermination(1, TimeUnit.HOURS);
+        futures.forEach(future -> {
+            try {
+                future.get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         System.out.println("total:" + objectSet.size());
-        return Result.success();
+        return Result.success(objectSet.size());
     }
 }

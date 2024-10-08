@@ -106,6 +106,7 @@ public class DataBaseRangeDistributeId implements IDistributeId, InitializingBea
     private Long fetchMemoryIdsAndGet(String bizType) {
         synchronized (mutex) {
             SerialRangeRecord curRangeRecord = atomicLongMap.get(bizType);
+            //双重检查，防止不必要的操作
             Long nextId = curRangeRecord.nextId();
             if (nextId != null) {
                 return nextId;
