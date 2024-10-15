@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: distributed-lock-tool
+
+  redis:
+    host: localhost
+    port: 6379
+    client-type: lettuce
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 20
+        min-idle: 5
+
+lock4j:
+  acquire-timeout: 3000 #默认值3s，可不设置
+  expire: 30000 #默认值30s，可不设置
+  primary-executor: com.baomidou.lock.executor.RedisTemplateLockExecutor #默认redisson>redisTemplate>zookeeper，可不设置
+  lock-key-prefix: lock

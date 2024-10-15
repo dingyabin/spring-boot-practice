@@ -28,6 +28,7 @@
         <module>spring-cache-demo</module>
         <module>spring-nacos-demo</module>
         <module>distributed-ids-tool</module>
+        <module>distributed-lock-tool</module>
     </modules>
 
     <name>spring-boot-practice</name>
