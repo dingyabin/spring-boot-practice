@@ -5,18 +5,44 @@ spring:
   application:
     name: distributed-lock-tool
 
+  #如果用redisson-spring-boot-starter则需要这个配置
   redis:
-    host: localhost
-    port: 6379
-    client-type: lettuce
-    lettuce:
-      pool:
-        enabled: true
-        max-active: 20
-        min-idle: 5
+    redisson:
+      config: |
+        # 单节点配置
+        singleServerConfig:
+          # 命令失败重试次数,如果尝试达到 retryAttempts（命令失败重试次数） 仍然不能将命令发送至某个指定的节点时，将抛出错误。
+          # 如果尝试在此限制之内发送成功，则开始启用 timeout（命令等待超时） 计时。
+          retryAttempts: 2
+          # 命令重试发送时间间隔，单位：毫秒
+          retryInterval: 100
+          # 节点地址
+          address: redis://127.0.0.1:6379
+          # 最小空闲连接数
+          connectionMinimumIdleSize: 32
+          # 连接池大小
+          connectionPoolSize: 64
+          # 数据库编号
+          database: 0
+
+#如果只引入redisson(不使用starter)则需要这个配置
+redisson:
+  config:
+    # 节点地址
+    address: redis://127.0.0.1:6379
+    # 连接池大小
+    connectionPoolSize: 64
+    # 最小空闲连接数
+    connectionMinimumIdleSize: 20
+    # 命令失败重试次数,如果尝试达到 retryAttempts（命令失败重试次数） 仍然不能将命令发送至某个指定的节点时，将抛出错误。
+    # 如果尝试在此限制之内发送成功，则开始启用 timeout（命令等待超时） 计时。
+    retryAttempts: 2
+    # 命令重试发送时间间隔，单位：毫秒
+    retryInterval: 100
+
 
 lock4j:
   acquire-timeout: 3000 #默认值3s，可不设置
   expire: 30000 #默认值30s，可不设置
-  primary-executor: com.baomidou.lock.executor.RedisTemplateLockExecutor #默认redisson>redisTemplate>zookeeper，可不设置
+  primary-executor: com.baomidou.lock.executor.RedissonLockExecutor #默认redisson>redisTemplate>zookeeper，可不设置
   lock-key-prefix: lock
