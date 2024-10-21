@@ -2,8 +2,6 @@ package com.dingyabin.web.config;
 
 import com.dingyabin.web.filter.WebCommonFilter;
 import com.dingyabin.web.property.WebConfigProperty;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +12,6 @@ import org.springframework.context.annotation.Configuration;
  * Date: 2024/10/21.
  * Time:21:37
  */
-@Getter
-@Setter
 @Configuration
 @EnableConfigurationProperties(WebConfigProperty.class)
 public class WebAutoConfiguration {
