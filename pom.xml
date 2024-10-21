@@ -29,6 +29,7 @@
         <module>spring-nacos-demo</module>
         <module>distributed-ids-tool</module>
         <module>distributed-lock-tool</module>
+        <module>spring-web-common</module>
     </modules>
 
     <name>spring-boot-practice</name>
@@ -59,6 +60,11 @@
             <dependency>
                 <groupId>com.dingyabin</groupId>
                 <artifactId>api-common</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dingyabin</groupId>
+                <artifactId>spring-web-common</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>

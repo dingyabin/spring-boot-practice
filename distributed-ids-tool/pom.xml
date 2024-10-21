@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>com.dingyabin</groupId>
-            <artifactId>api-common</artifactId>
+            <artifactId>spring-web-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
