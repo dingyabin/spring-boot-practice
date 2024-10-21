@@ -2,7 +2,6 @@ package com.dingyabin.web.filter;
 
 import com.dingyabin.web.property.WebConfigProperty;
 import com.dingyabin.web.request.RepeatReadHttpServletRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.util.StringUtils;
@@ -23,8 +22,6 @@ import java.util.UUID;
 public class WebCommonFilter extends OncePerRequestFilter {
 
     private static final String TRACE_ID = "traceId";
-
-    private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final WebConfigProperty webConfigProperty;
 
@@ -58,7 +55,7 @@ public class WebCommonFilter extends OncePerRequestFilter {
                 jsonBody = ((RepeatReadHttpServletRequest) request).getJsonBody();
             }
             if (log.isInfoEnabled()) {
-                log.info("http请求 URL={}, params={} , jsonBody={} ,总耗时={}ms", url, OBJECT_MAPPER.writeValueAsString(params), jsonBody, costTime);
+                log.info("http请求 URL={}, params={} , jsonBody={} ,总耗时={}ms", url, params, jsonBody, costTime);
             }
         }
     }
