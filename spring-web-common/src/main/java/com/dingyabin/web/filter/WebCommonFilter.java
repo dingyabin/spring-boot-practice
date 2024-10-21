@@ -90,9 +90,7 @@ public class WebCommonFilter extends OncePerRequestFilter {
         if (request instanceof RepeatReadHttpServletRequest) {
             jsonBody = ((RepeatReadHttpServletRequest) request).getJsonBody();
         }
-        if (log.isInfoEnabled()) {
-            log.info("http请求 URL={}, params={} , jsonBody={} ,总耗时={}ms", url, params, jsonBody, costTime);
-        }
+        log.info("http请求 URL={}, params={} , jsonBody={} ,总耗时={}ms", url, params, jsonBody, costTime);
     }
 
 
