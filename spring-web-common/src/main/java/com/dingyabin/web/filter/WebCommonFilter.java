@@ -66,7 +66,6 @@ public class WebCommonFilter extends OncePerRequestFilter {
 
 
     private void autoInjectTraceId(HttpServletRequest request, HttpServletResponse response) {
-        MDC.clear();
         //先从header获取
         String traceId = request.getHeader(TRACE_ID);
         if (!StringUtils.hasText(traceId)) {
