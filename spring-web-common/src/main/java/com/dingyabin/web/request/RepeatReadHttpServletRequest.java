@@ -22,6 +22,18 @@ public class RepeatReadHttpServletRequest extends HttpServletRequestWrapper {
         contentType = getHeader("Content-Type") == null ? "TEXT/HTML" : getHeader("Content-Type");
     }
 
+    /**
+     * 包装可重复读的request，且可以手动传入contentBody，替换原来的contentBody，可用于对原参数解密
+     * @param request 原始的request
+     * @param contentBody 替换的contentBody
+     * @throws IOException 异常
+     */
+    public RepeatReadHttpServletRequest(HttpServletRequest request, String contentBody) throws IOException {
+        this(request);
+        if (contentBody != null) {
+            sourceData = contentBody.getBytes(StandardCharsets.UTF_8);
+        }
+    }
 
     public String getJsonBody() throws IOException {
         String result = null;
