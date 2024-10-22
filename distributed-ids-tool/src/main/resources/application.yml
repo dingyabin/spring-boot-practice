@@ -22,6 +22,13 @@ mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
 
 
+web:
+  common:
+    config:
+      printIp: true
+      printHeader: true
+
+
 logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss}-[%X{traceId}]-[%thread]-[%level] - %logger{10} - %msg%n'

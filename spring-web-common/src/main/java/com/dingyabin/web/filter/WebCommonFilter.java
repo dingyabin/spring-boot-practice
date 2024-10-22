@@ -1,5 +1,6 @@
 package com.dingyabin.web.filter;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import com.dingyabin.web.property.WebConfigProperty;
 import com.dingyabin.web.request.RepeatReadHttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -51,20 +52,6 @@ public class WebCommonFilter extends OncePerRequestFilter {
     }
 
 
-    private Map<String, String> getParams(HttpServletRequest request) {
-        Map<String, String> resultMap = null;
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()) {
-            if (resultMap == null) {
-                resultMap = new HashMap<>(5);
-            }
-            String name = parameterNames.nextElement();
-            resultMap.put(name, request.getParameter(name));
-        }
-        return resultMap;
-    }
-
-
     private void autoInjectTraceId(HttpServletRequest request, HttpServletResponse response) {
         //先从header获取
         String traceId = request.getHeader(TRACE_ID);
@@ -85,12 +72,20 @@ public class WebCommonFilter extends OncePerRequestFilter {
     private void logTrace(HttpServletRequest request, long startTime) throws IOException {
         long costTime = System.currentTimeMillis() - startTime;
         String url = request.getRequestURL().toString();
-        Map<String, String> params = getParams(request);
+        Map<String, String> params = ServletUtil.getParamMap(request);
         String jsonBody = null;
         if (request instanceof RepeatReadHttpServletRequest) {
             jsonBody = ((RepeatReadHttpServletRequest) request).getJsonBody();
         }
-        log.info("http请求 URL={}, params={} , jsonBody={} ,总耗时={}ms", url, params, jsonBody, costTime);
+        String clientIP = null;
+        if (webConfigProperty.isPrintIp()) {
+            clientIP = ServletUtil.getClientIP(request);
+        }
+        Map<String, String> headerMap = null;
+        if (webConfigProperty.isPrintHeader()) {
+             headerMap = ServletUtil.getHeaderMap(request);
+        }
+        log.info("http请求 IP={}, URL={}, header={}, params={}, jsonBody={}, 总耗时={}ms", clientIP, url, headerMap, params, jsonBody, costTime);
     }
 
 
