@@ -4,6 +4,7 @@ import com.dingyabin.distributeId.service.impl.DataBaseRangeDistributeId;
 import com.dingyabin.distributeId.service.impl.SnowflakeDistributeId;
 import com.dingyabin.response.Result;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,5 +67,11 @@ public class IdController {
         });
         System.out.println("total:" + objectSet.size());
         return Result.success(objectSet.size());
+    }
+
+
+    @RequestMapping("/get4")
+    public Result<Map<String, String>> get4(@RequestBody Map<String, String> map) {
+        return Result.success(map);
     }
 }

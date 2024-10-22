@@ -41,6 +41,7 @@ public class WebCommonFilter extends OncePerRequestFilter {
         }
         //替换为可重复读的request, 如果有bodyProcessor的话，替换处理之后的body
         if (webConfigProperty.isRepeatReadRequestProxy() || bodyProcessor != null) {
+            //如果有bodyProcessor，且支持本次请求，那么用处理之后的body往后传递
             if (bodyProcessor != null && bodyProcessor.support(request, response)) {
                 request = new RepeatReadHttpServletRequest(request, bodyProcessor.doBeforeReadBody(request, response));
             } else {

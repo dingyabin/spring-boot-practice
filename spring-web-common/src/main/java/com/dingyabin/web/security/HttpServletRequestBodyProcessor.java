@@ -2,6 +2,7 @@ package com.dingyabin.web.security;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author 丁亚宾
@@ -20,6 +21,6 @@ public interface HttpServletRequestBodyProcessor {
      * @param response response
      * @return 返回处理之后的body
      */
-    String doBeforeReadBody(HttpServletRequest request, HttpServletResponse response);
+    String doBeforeReadBody(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
 }
