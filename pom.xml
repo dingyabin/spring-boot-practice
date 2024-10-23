@@ -30,6 +30,7 @@
         <module>distributed-ids-tool</module>
         <module>distributed-lock-tool</module>
         <module>spring-web-common</module>
+        <module>spring-data-sharding</module>
     </modules>
 
     <name>spring-boot-practice</name>
