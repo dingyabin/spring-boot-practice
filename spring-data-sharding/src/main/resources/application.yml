@@ -75,6 +75,11 @@ spring:
     props:
       # 展示修改以后的sql语句
       sql-show: true
+      #用于设置任务处理线程池的大小
+      #每个 ShardingSphereDataSource 使用一个独立的线程池，同一个 JVM 的不同数据源不共享线程池, 默认无限制
+      #kernel-executor-size:
+      #一次查询请求在每个数据库实例中所能使用的最大连接数, 默认=1
+      max-connections-size-per-query: 1
 #https://blog.csdn.net/weixin_42055932/article/details/138000206
 #https://blog.csdn.net/qq_46416934/article/details/123427460
 
