@@ -19,12 +19,12 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- shardingsphere-jdbc使用的是高版本的snakeyaml，而springboot使用的是1.3.0的，两者冲突了-->
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>1.33</version>
-            </dependency>
+            <!--shardingsphere-jdbc使用的是高版本的snakeyaml，而springboot使用的是1.3.0的，两者冲突了-->
+<!--            <dependency>-->
+<!--                <groupId>org.yaml</groupId>-->
+<!--                <artifactId>snakeyaml</artifactId>-->
+<!--                <version>1.33</version>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -48,16 +48,16 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.49</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.shardingsphere</groupId>
-            <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
-            <version>5.2.1</version>
-        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.apache.shardingsphere</groupId>-->
-<!--            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>-->
-<!--            <version>4.1.1</version>-->
+<!--            <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>-->
+<!--            <version>5.2.1</version>-->
 <!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+            <version>4.1.1</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

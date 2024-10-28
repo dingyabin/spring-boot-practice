@@ -1,0 +1,91 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: spring-data-sharding
+#数据库配置
+  shardingsphere:
+    # 数据源配置
+    datasource:
+      # 数据源名称，多数据源以逗号分隔
+      names: db0,db1
+      db0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://localhost:3306/sys_common?useSSL=false&rewriteBatchedStatements=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+        maximum-pool-size: 20
+        minimum-idle: 10
+        username: root
+        password: 12345678
+      db1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://localhost:3306/weight_manager?useSSL=false&rewriteBatchedStatements=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+        maximum-pool-size: 20
+        minimum-idle: 10
+        username: root
+        password: 12345678
+    # 分片规则配置
+    rules:
+      sharding:
+        default-database-strategy:
+          standard:
+            sharding-algorithm-name: defaultDataBaseSelect
+        # 分片算法配置
+        sharding-algorithms:
+          database-inline:
+            # 分片算法类型
+            type: INLINE
+            props:
+              # 分片算法的行表达式（算法自行定义，此处为方便演示效果）
+              algorithm-expression: db$->{cusid % 2}
+          table-inline:
+            # 分片算法类型
+            type: INLINE
+            props:
+              # 分片算法的行表达式
+              algorithm-expression: order_$->{cusid % 2}
+          defaultDataBaseSelect:
+            # 分片算法类型
+            type: INLINE
+            props:
+              # 分片算法的行表达式
+              algorithm-expression: db0
+        tables:
+          # 逻辑表名称
+          order:
+            # 行表达式标识符可以使用 ${...} 或 $->{...}，但前者与 Spring 本身的属性文件占位符冲突，因此在 Spring 环境中使用行表达式标识符建议使用 $->{...}
+            actual-data-nodes: db$->{0..1}.order_$->{0..1}
+            # 分库策略
+            database-strategy:
+              standard:
+                # 分片列名称
+                sharding-column: cusid
+                # 分片算法名称
+                sharding-algorithm-name: database-inline
+            # 分表策略
+            table-strategy:
+              standard:
+                # 分片列名称
+                sharding-column: cusid
+                # 分片算法名称
+                sharding-algorithm-name: table-inline
+    # 属性配置
+    props:
+      # 展示修改以后的sql语句
+      sql-show: true
+      #用于设置任务处理线程池的大小
+      #每个 ShardingSphereDataSource 使用一个独立的线程池，同一个 JVM 的不同数据源不共享线程池, 默认无限制
+      #kernel-executor-size:
+      #一次查询请求在每个数据库实例中所能使用的最大连接数, 默认=1
+      max-connections-size-per-query: 1
+#https://blog.csdn.net/weixin_42055932/article/details/138000206
+#https://blog.csdn.net/qq_46416934/article/details/123427460
+
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:/mapper/**/*.xml
