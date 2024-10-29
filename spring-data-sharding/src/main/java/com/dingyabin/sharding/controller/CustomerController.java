@@ -42,7 +42,7 @@ public class CustomerController {
 
     @PostMapping("/query")
     public List<Customer> queryCustomer(@RequestBody Customer queryObject) {
-         return new ArrayList<>();
+        return customerService.list();
     }
 
 }

@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: spring-data-sharding
+  jackson:
+    date-format: yyyy/MM/dd
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
   #数据库配置
   shardingsphere:
     # 数据源配置
