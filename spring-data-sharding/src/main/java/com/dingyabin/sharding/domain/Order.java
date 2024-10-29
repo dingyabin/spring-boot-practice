@@ -10,7 +10,7 @@ import lombok.Data;
 
 /**
  * 
- * @TableName order_0
+ * @TableName order
  */
 @TableName(value ="`order`")
 @Data

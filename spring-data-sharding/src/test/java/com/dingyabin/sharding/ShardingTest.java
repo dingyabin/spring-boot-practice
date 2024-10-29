@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.dingyabin.sharding.domain.Order;
 import com.dingyabin.sharding.mapper.OrderMapper;
+import com.dingyabin.sharding.service.impl.OrderService;
 import groovy.lang.Closure;
 import groovy.util.Expando;
 import org.apache.shardingsphere.underlying.common.config.inline.InlineExpressionParser;
@@ -24,6 +25,9 @@ public class ShardingTest {
 
     @Resource
     private OrderMapper orderMapper;
+
+    @Resource
+    private OrderService orderService;
 
     @Test
     public void testInsert() {
@@ -50,9 +54,18 @@ public class ShardingTest {
     }
 
 
+
+    @Test
+    public void testTransactional(){
+        orderService.transactionalSave(true);
+    }
+
+
+
+
     @Test
     public void testGroovy(){
-        Long value = 3123123L;
+        String value = "31235ertert123L";
         Closure<?>  closure = new InlineExpressionParser("${value.hashCode()}").evaluateClosure();
         Closure<?> result = closure.rehydrate(new Expando(), null, null);
         result.setResolveStrategy(Closure.DELEGATE_ONLY);
