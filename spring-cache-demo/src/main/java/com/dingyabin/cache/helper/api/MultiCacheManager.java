@@ -1,6 +1,8 @@
 package com.dingyabin.cache.helper.api;
 
 import com.dingyabin.redis.helper.RedisHelper;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Resource;
 import java.lang.reflect.ParameterizedType;
@@ -15,8 +17,14 @@ public abstract class MultiCacheManager<K, V> extends BaseCaffeineCacheManager<K
 
     private final Class<V> genericType;
 
+    @Getter
+    @Setter
+    protected int timeOut = 60;
 
-    private int timeOut;
+    /**
+     * 是否允许从持久层加载数据
+     */
+    protected boolean allowLoadObjectInRepository = true;
 
 
     @Resource
@@ -24,6 +32,7 @@ public abstract class MultiCacheManager<K, V> extends BaseCaffeineCacheManager<K
 
 
     public MultiCacheManager() {
+        init();
         ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
         genericType = (Class<V>) actualTypeArguments[1];
@@ -32,7 +41,11 @@ public abstract class MultiCacheManager<K, V> extends BaseCaffeineCacheManager<K
 
     @Override
     protected V generateObject(K key) {
-        return redisHelper.getCacheObject(key.toString(), genericType);
+        V cacheObject = redisHelper.getCacheObject(key.toString(), genericType);
+        if (cacheObject == null && allowLoadObjectInRepository && (cacheObject = loadObjectInRepository(key)) != null) {
+            redisHelper.setCacheObject(key.toString(), cacheObject, timeOut);
+        }
+        return cacheObject;
     }
 
 
@@ -48,5 +61,20 @@ public abstract class MultiCacheManager<K, V> extends BaseCaffeineCacheManager<K
         super.addObject(k, v);
         redisHelper.setCacheObject(k.toString(), v, timeOut);
     }
+
+
+    /**
+     * 执行一些初始化任务，比如设置过期时间
+     */
+    protected abstract void init();
+
+
+    /**
+     * 从数据库查找
+     *
+     * @param key key
+     * @return V
+     */
+    protected abstract V loadObjectInRepository(K key);
 
 }
