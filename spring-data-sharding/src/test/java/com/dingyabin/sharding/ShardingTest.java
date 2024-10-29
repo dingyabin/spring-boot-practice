@@ -3,8 +3,15 @@ package com.dingyabin.sharding;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.dingyabin.sharding.domain.Customer;
+import com.dingyabin.sharding.domain.Number;
 import com.dingyabin.sharding.domain.Order;
+import com.dingyabin.sharding.mapper.CustomerMapper;
+import com.dingyabin.sharding.mapper.NumberMapper;
 import com.dingyabin.sharding.mapper.OrderMapper;
 import com.dingyabin.sharding.service.impl.OrderService;
 import groovy.lang.Closure;
@@ -25,6 +32,12 @@ public class ShardingTest {
 
     @Resource
     private OrderMapper orderMapper;
+
+    @Resource
+    private CustomerMapper customerMapper;
+
+    @Resource
+    private NumberMapper numberMapper;
 
     @Resource
     private OrderService orderService;
@@ -61,6 +74,27 @@ public class ShardingTest {
     }
 
 
+    @Test
+    public void testCustomer(){
+        List<Customer> customers = customerMapper.selectList(Wrappers.emptyWrapper());
+        System.out.println(customers);
+    }
+
+
+    @Test
+    public void testCustomerSharding() {
+        for (int i = 0; i < 5; i++) {
+            Number number = new Number();
+            number.setNum(new Random().nextInt(1000000));
+            number.setCreateTime(new Date());
+            numberMapper.insert(number);
+        }
+        LambdaQueryWrapper<Number> lambdaQuery = Wrappers.lambdaQuery();
+        lambdaQuery.ge(Number::getNum, 325134);
+        lambdaQuery.le(Number::getNum, 325134);
+        List<Number> numbers = numberMapper.selectList(lambdaQuery);
+        System.out.println(numbers);
+    }
 
 
     @Test

@@ -15,14 +15,14 @@ import java.util.Set;
  * Date: 2024/10/29.
  * Time:13:16
  */
-public class CustomerIdShardingAlgorithm implements PreciseShardingAlgorithm<Long>, RangeShardingAlgorithm<Long> {
+public class CustomerIdShardingAlgorithm implements PreciseShardingAlgorithm<Integer>, RangeShardingAlgorithm<Integer> {
 
 
     @Override
-    public String doSharding(Collection<String> targets, PreciseShardingValue<Long> shardingValue) {
-        Long customerId = shardingValue.getValue();
+    public String doSharding(Collection<String> targets, PreciseShardingValue<Integer> shardingValue) {
+        Integer number = shardingValue.getValue();
         String logicTableName = shardingValue.getLogicTableName();
-        String table = logicTableName + "_" + customerId.hashCode() % targets.size();
+        String table = logicTableName + "_" + number % targets.size();
         if (targets.contains(table)) {
             return table;
         }
@@ -31,11 +31,11 @@ public class CustomerIdShardingAlgorithm implements PreciseShardingAlgorithm<Lon
 
 
     @Override
-    public Collection<String> doSharding(Collection<String> targets, RangeShardingValue<Long> shardingValue) {
+    public Collection<String> doSharding(Collection<String> targets, RangeShardingValue<Integer> shardingValue) {
         String logicTableName = shardingValue.getLogicTableName();
-        Range<Long> valueRange = shardingValue.getValueRange();
-        Long lowerEndpoint = valueRange.lowerEndpoint();
-        Long upperEndpoint = valueRange.upperEndpoint();
+        Range<Integer> valueRange = shardingValue.getValueRange();
+        Integer lowerEndpoint = valueRange.lowerEndpoint();
+        Integer upperEndpoint = valueRange.upperEndpoint();
         if (lowerEndpoint > upperEndpoint) {
             throw new UnsupportedOperationException();
         }

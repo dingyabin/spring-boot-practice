@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingyabin.sharding.mapper.CustomerMapper">
+
+    <resultMap id="BaseResultMap" type="com.dingyabin.sharding.domain.Customer">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="cusname" column="cusname" jdbcType="VARCHAR"/>
+            <result property="time" column="time" jdbcType="DATE"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,cusname,`time`
+    </sql>
+
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO
+             customer ( cusname, `time`)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.cusname} , #{item.time} )
+        </foreach>
+    </insert>
+
+</mapper>
