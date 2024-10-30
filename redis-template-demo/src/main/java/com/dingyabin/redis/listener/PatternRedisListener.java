@@ -1,6 +1,6 @@
 package com.dingyabin.redis.listener;
 
-import com.dingyabin.redis.listener.api.BaseRedisMessageListener;
+import com.dingyabin.redis.listener.BaseRedisMessageListener;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.Topic;
 import org.springframework.stereotype.Component;
