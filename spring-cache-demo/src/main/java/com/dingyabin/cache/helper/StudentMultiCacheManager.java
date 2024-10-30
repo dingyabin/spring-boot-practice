@@ -1,7 +1,8 @@
 package com.dingyabin.cache.helper;
 
-import com.dingyabin.cache.helper.api.MultiCacheManager;
+import com.dingyabin.cache.helper.api.MultiLevelCacheManager;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +11,8 @@ import java.util.concurrent.TimeUnit;
  * Date: 2024/10/29.
  * Time:22:17
  */
-public class StudentMultiCacheManager extends MultiCacheManager<String, String> {
+@Service
+public class StudentMultiCacheManager extends MultiLevelCacheManager<String, String> {
 
 
     @Override

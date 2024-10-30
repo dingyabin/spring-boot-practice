@@ -33,4 +33,11 @@ public class CacheController {
         return Result.success(obj);
     }
 
+
+    @PostMapping("/test3")
+    public Result<String> testCache3(String name) {
+        String obj = cacheService.getObject3(name);
+        return Result.success(obj);
+    }
+
 }

@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
  * Date: 2024/8/27.
  * Time:0:13
  */
-public abstract class MultiCacheManager<K, V> extends BaseCaffeineCacheManager<K, V> {
+public abstract class MultiLevelCacheManager<K, V> extends BaseCaffeineCacheManager<K, V> {
 
     private final Class<V> genericType;
 
@@ -31,7 +31,7 @@ public abstract class MultiCacheManager<K, V> extends BaseCaffeineCacheManager<K
     private RedisHelper redisHelper;
 
 
-    public MultiCacheManager() {
+    public MultiLevelCacheManager() {
         init();
         ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
