@@ -1,7 +1,5 @@
 package com.dingyabin.redis.listener;
 
-import com.dingyabin.redis.listener.api.BaseRedisMessageListener;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -9,9 +7,6 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author 丁亚宾

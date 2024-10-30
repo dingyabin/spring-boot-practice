@@ -1,4 +1,4 @@
-package com.dingyabin.redis.listener.api;
+package com.dingyabin.redis.listener;
 
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
