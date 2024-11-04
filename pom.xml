@@ -31,6 +31,7 @@
         <module>distributed-lock-tool</module>
         <module>spring-web-common</module>
         <module>spring-data-sharding</module>
+        <module>spring-resilience4j-demo</module>
     </modules>
 
     <name>spring-boot-practice</name>
