@@ -4,3 +4,90 @@ server:
 spring:
   application:
     name: spring-resilience4j-demo
+
+#https://resilience4j.readme.io/v2.1.0/docs/getting-started
+
+resilience4j.ratelimiter:
+  configs:
+    default:
+      limitForPeriod: 10
+      limitRefreshPeriod: 1s
+      timeoutDuration: 0
+      registerHealthIndicator: false
+      eventConsumerBufferSize: 100
+      writableStackTraceEnabled: false
+      allowHealthIndicatorToFail:
+      subscribeForEvents: false
+  instances:
+    controllerA:
+      baseConfig: default
+      limitForPeriod: 1
+      limitRefreshPeriod: 2s
+      timeoutDuration: 0
+    controllerB:
+      baseConfig: default
+      limitForPeriod: 2
+      limitRefreshPeriod: 1s
+      timeoutDuration: 1s
+
+#resilience4j.timelimiter:
+#  instances:
+#    backendA:
+#      timeoutDuration: 2s
+#      cancelRunningFuture: true
+#    backendB:
+#      timeoutDuration: 1s
+#      cancelRunningFuture: false
+
+#resilience4j.circuitbreaker:
+#  instances:
+#    backendA:
+#      registerHealthIndicator: true
+#      slidingWindowSize: 100
+#    backendB:
+#      registerHealthIndicator: true
+#      slidingWindowSize: 10
+#      permittedNumberOfCallsInHalfOpenState: 3
+#      slidingWindowType: TIME_BASED
+#      minimumNumberOfCalls: 20
+#      waitDurationInOpenState: 50s
+#      failureRateThreshold: 50
+#      eventConsumerBufferSize: 10
+#      recordFailurePredicate: io.github.robwin.exception.RecordFailurePredicate
+#
+#resilience4j.retry:
+#  instances:
+#    backendA:
+#      maxAttempts: 3
+#      waitDuration: 10s
+#      enableExponentialBackoff: true
+#      exponentialBackoffMultiplier: 2
+#      retryExceptions:
+#        - org.springframework.web.client.HttpServerErrorException
+#        - java.io.IOException
+#      ignoreExceptions:
+#        - io.github.robwin.exception.BusinessException
+#    backendB:
+#      maxAttempts: 3
+#      waitDuration: 10s
+#      retryExceptions:
+#        - org.springframework.web.client.HttpServerErrorException
+#        - java.io.IOException
+#      ignoreExceptions:
+#        - io.github.robwin.exception.BusinessException
+#
+#resilience4j.bulkhead:
+#  instances:
+#    backendA:
+#      maxConcurrentCalls: 10
+#    backendB:
+#      maxWaitDuration: 10ms
+#      maxConcurrentCalls: 20
+#
+#resilience4j.thread-pool-bulkhead:
+#  instances:
+#    backendC:
+#      maxThreadPoolSize: 1
+#      coreThreadPoolSize: 1
+#      queueCapacity: 1
+#      writableStackTraceEnabled: true
