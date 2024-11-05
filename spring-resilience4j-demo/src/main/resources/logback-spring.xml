@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" scanPeriod="60 seconds" debug="false">
+
+    <contextName>spring-resilience4j-demo</contextName>
+
+    <property name="log.days" value="30"/>
+
+    <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS}-[%X{traceId}]-[%thread]-[%level]-[%logger{10}]-%msg%n"/>
+
+    <!-- 生产环境 -->
+    <springProfile name="default">
+        <property name="log.path" value="value"/>
+    </springProfile>
+
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoder 默认配置为PatternLayoutEncoder -->
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+
+<!--    <appender name="info-log-file" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>INFO</level>-->
+<!--            <onMatch>ACCEPT</onMatch>-->
+<!--            <onMismatch>DENY</onMismatch>-->
+<!--        </filter>-->
+<!--        <File>${log.path}/info.log</File>-->
+<!--        &lt;!&ndash;滚动策略，按照时间滚动 TimeBasedRollingPolicy&ndash;&gt;-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            &lt;!&ndash;文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间&ndash;&gt;-->
+<!--            <FileNamePattern>${log.path}/info.log.%d{yyyyMMdd}</FileNamePattern>-->
+<!--            &lt;!&ndash;只保留最近n天的日志&ndash;&gt;-->
+<!--            <maxHistory>${log.days}</maxHistory>-->
+<!--        </rollingPolicy>-->
+<!--        &lt;!&ndash;日志输出编码格式化&ndash;&gt;-->
+<!--        <encoder>-->
+<!--            <charset>UTF-8</charset>-->
+<!--            <pattern>${log.pattern}</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
+
+
+    <!--指定最基础的日志输出级别-->
+    <root level="INFO">
+        <!--appender将会添加到这个loger-->
+        <appender-ref ref="stdout"/>
+    </root>
+
+</configuration>
+
+
+

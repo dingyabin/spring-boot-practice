@@ -5,6 +5,12 @@ spring:
   application:
     name: spring-resilience4j-demo
 
+web:
+  common:
+    config:
+      printHeader: false
+      logTracePrefix: 'SPRING-RESILIENCE4J-DEMO收到HTTP请求,'
+
 #https://resilience4j.readme.io/v2.1.0/docs/getting-started
 
 resilience4j.ratelimiter:
