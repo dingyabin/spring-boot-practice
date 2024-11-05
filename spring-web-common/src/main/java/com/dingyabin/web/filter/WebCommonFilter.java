@@ -23,6 +23,8 @@ public class WebCommonFilter extends OncePerRequestFilter {
 
     private static final String TRACE_ID = "traceId";
 
+    private static String logTracePrefix = "HTTP请求";
+
     private final WebConfigProperty webConfigProperty;
 
     private final HttpServletRequestBodyProcessor bodyProcessor;
@@ -30,6 +32,9 @@ public class WebCommonFilter extends OncePerRequestFilter {
     public WebCommonFilter(WebConfigProperty webConfigProperty, HttpServletRequestBodyProcessor bodyProcessor) {
         this.webConfigProperty = webConfigProperty;
         this.bodyProcessor = bodyProcessor;
+        if (StringUtils.hasText(webConfigProperty.getLogTracePrefix())) {
+            logTracePrefix = webConfigProperty.getLogTracePrefix();
+        }
     }
 
 
@@ -92,7 +97,7 @@ public class WebCommonFilter extends OncePerRequestFilter {
         if (webConfigProperty.isPrintHeader()) {
              headerMap = ServletUtil.getHeaderMap(request);
         }
-        log.info("http请求 IP={}, URL={}, header={}, params={}, jsonBody={}, 总耗时={}ms", clientIP, url, headerMap, params, jsonBody, costTime);
+        log.info("{} IP={}, URL={}, header={}, params={}, jsonBody={}, 总耗时={}ms", logTracePrefix, clientIP, url, headerMap, params, jsonBody, costTime);
     }
 
 

@@ -20,13 +20,17 @@ public class WebConfigProperty {
     //是否输出trace日志
     private boolean logTrace = true;
 
+    //输出的logTrace的前缀
+    private String logTracePrefix;
+
     //是否替换为可重复读的request
     private boolean repeatReadRequestProxy = true;
 
     //trace日志是否输出ip
-    private boolean printIp = false;
+    private boolean printIp = true;
 
     //trace日志是否输出header
     private boolean printHeader = false;
+
 
 }
