@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Random;
 
 /**
  * @author 丁亚宾
@@ -47,6 +48,9 @@ public class ResilienceController extends BaseController {
     @RequestMapping("/testRetry")
     public Result<String> testRetry() {
         System.out.println("开始执行");
-        throw new RuntimeException("失败了......");
+        if (new Random().nextBoolean()) {
+            throw new RuntimeException("失败了......");
+        }
+        return Result.success("ok");
     }
 }

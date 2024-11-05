@@ -59,8 +59,8 @@ resilience4j.retry:
   configs:
     default:
       maxAttempts: 3
-      waitDuration: 3s
-      enableExponentialBackoff: true
+      waitDuration: 1s
+      enableExponentialBackoff: false
       exponentialBackoffMultiplier: 2
   instances:
     serviceA:
@@ -72,6 +72,7 @@ resilience4j.retry:
         - java.lang.RuntimeException
       ignoreExceptions:
         - java.io.IOException
+      resultPredicate: com.dingyabin.resilience4j.config.RetryResultPredicate
     serviceB:
       baseConfig: default
       retryExceptions:
