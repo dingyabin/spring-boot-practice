@@ -1,5 +1,6 @@
 package com.dingyabin.web.config;
 
+import com.dingyabin.web.config.strategy.TraceIdStyleStrategy;
 import com.dingyabin.web.filter.WebCommonFilter;
 import com.dingyabin.web.property.WebConfigProperty;
 import com.dingyabin.web.security.HttpServletRequestBodyProcessor;
@@ -21,10 +22,11 @@ public class WebAutoConfiguration {
 
     @Bean
     public FilterRegistrationBean<WebCommonFilter> webCommonFilterRegister(WebConfigProperty webConfigProperty,
-                                                                           @Autowired(required = false) HttpServletRequestBodyProcessor bodyProcessor) {
+                                                                           @Autowired(required = false) HttpServletRequestBodyProcessor bodyProcessor,
+                                                                           @Autowired(required = false) TraceIdStyleStrategy traceIdStyleStrategy) {
         FilterRegistrationBean<WebCommonFilter> registration = new FilterRegistrationBean<>();
         //注入过滤器
-        registration.setFilter(new WebCommonFilter(webConfigProperty, bodyProcessor));
+        registration.setFilter(new WebCommonFilter(webConfigProperty, bodyProcessor, traceIdStyleStrategy));
         //拦截规则
         registration.addUrlPatterns("/*");
         //过滤器名称

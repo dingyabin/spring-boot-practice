@@ -1,6 +1,8 @@
 package com.dingyabin.web.filter;
 
 import cn.hutool.extra.servlet.ServletUtil;
+import com.dingyabin.web.config.strategy.TraceIdStyleStrategy;
+import com.dingyabin.web.config.strategy.UidTraceIdStyle;
 import com.dingyabin.web.property.WebConfigProperty;
 import com.dingyabin.web.request.RepeatReadHttpServletRequest;
 import com.dingyabin.web.security.HttpServletRequestBodyProcessor;
@@ -23,17 +25,22 @@ public class WebCommonFilter extends OncePerRequestFilter {
 
     private static final String TRACE_ID = "traceId";
 
-    private static String logTracePrefix = "HTTP请求";
+    private String logTracePrefix = "HTTP请求";
+
+    private TraceIdStyleStrategy traceIdStyleStrategy = new UidTraceIdStyle();
 
     private final WebConfigProperty webConfigProperty;
 
     private final HttpServletRequestBodyProcessor bodyProcessor;
 
-    public WebCommonFilter(WebConfigProperty webConfigProperty, HttpServletRequestBodyProcessor bodyProcessor) {
+    public WebCommonFilter(WebConfigProperty webConfigProperty, HttpServletRequestBodyProcessor bodyProcessor, TraceIdStyleStrategy traceIdStyleStrategy) {
         this.webConfigProperty = webConfigProperty;
         this.bodyProcessor = bodyProcessor;
         if (StringUtils.hasText(webConfigProperty.getLogTracePrefix())) {
-            logTracePrefix = webConfigProperty.getLogTracePrefix();
+            this.logTracePrefix = webConfigProperty.getLogTracePrefix();
+        }
+        if (traceIdStyleStrategy != null) {
+            this.traceIdStyleStrategy = traceIdStyleStrategy;
         }
     }
 
@@ -73,7 +80,7 @@ public class WebCommonFilter extends OncePerRequestFilter {
         }
         if (!StringUtils.hasText(traceId)) {
             //生成一个
-            traceId = UUID.randomUUID().toString().replace("-", "");
+            traceId = traceIdStyleStrategy.traceId(request, response);
         }
         MDC.put(TRACE_ID, traceId);
         response.addHeader(TRACE_ID, traceId);
