@@ -1,6 +1,6 @@
 package com.dingyabin.web.desensization;
 
-import com.dingyabin.web.desensization.enums.DesensitizationTypeEnum;
+import com.dingyabin.web.desensization.enums.DesensitizedTypeEnum;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
@@ -14,16 +14,12 @@ import java.io.IOException;
  */
 public class DesensitizationJsonSerializer extends JsonSerializer<String> implements ContextualSerializer {
 
+    private DesensitizedTypeEnum desensitizedType;
 
-    private DesensitizationTypeEnum desensitizationTypeEnum;
-
-    public DesensitizationJsonSerializer() {
-        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    }
 
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeString(value);
+        gen.writeString(desensitizedType.getDesensitize().apply(value));
     }
 
 
@@ -32,7 +28,7 @@ public class DesensitizationJsonSerializer extends JsonSerializer<String> implem
         Desensitization desensitization = property.getAnnotation(Desensitization.class);
         JavaType type = property.getType();
         if (desensitization != null && String.class.equals(type.getRawClass())) {
-            this.desensitizationTypeEnum = desensitization.value();
+            this.desensitizedType = desensitization.value();
             return this;
         }
         return prov.findValueSerializer(type, property);

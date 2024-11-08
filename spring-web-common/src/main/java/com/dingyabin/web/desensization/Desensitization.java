@@ -1,6 +1,6 @@
 package com.dingyabin.web.desensization;
 
-import com.dingyabin.web.desensization.enums.DesensitizationTypeEnum;
+import com.dingyabin.web.desensization.enums.DesensitizedTypeEnum;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -20,6 +20,6 @@ import java.lang.annotation.*;
 public @interface Desensitization {
 
 
-    DesensitizationTypeEnum value();
+    DesensitizedTypeEnum value();
 
 }

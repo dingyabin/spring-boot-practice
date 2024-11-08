@@ -1,6 +1,5 @@
 package com.dingyabin.resilience4j.controller;
 
-import com.dingyabin.resilience4j.model.Student;
 import com.dingyabin.response.Result;
 import com.dingyabin.web.common.BaseController;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
@@ -55,8 +54,4 @@ public class ResilienceController extends BaseController {
         return Result.success("ok");
     }
 
-    @RequestMapping("/test1")
-    public Result<Student> test1() {
-        return Result.success(new Student());
-    }
 }
