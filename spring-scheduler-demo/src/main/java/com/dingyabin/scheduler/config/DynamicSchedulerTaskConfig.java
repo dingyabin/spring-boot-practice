@@ -65,7 +65,7 @@ public class DynamicSchedulerTaskConfig implements SchedulingConfigurer {
                 }
                 String cron = dynamicTask.getCron();
                 System.out.printf("----------%s的cron表达式为%s -----------\r\n", uniqueTaskName, cron);
-                CronTrigger cronTrigger = TRIGGER_MAP.computeIfAbsent(cron, s -> new CronTrigger(cron));
+                CronTrigger cronTrigger = TRIGGER_MAP.computeIfAbsent(cron, key -> new CronTrigger(cron));
                 return cronTrigger.nextExecutionTime(triggerContext);
             });
         }
