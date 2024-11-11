@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: spring-scheduler-demo
+  task:
+    scheduling:
+      pool:
+        size: 3
+      thread-name-prefix: customer-scheduling-
+
+  #数据库配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sys_common?useSSL=false&rewriteBatchedStatements=true&serverTimezone=Asia/Shanghai
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 20
+      username: root
+      password: 12345678
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:/mapper/**/*.xml
