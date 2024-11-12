@@ -6,6 +6,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingyabin.scheduler.model.DynamicTask;
 import com.dingyabin.scheduler.mapper.DynamicTaskMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author 丁亚宾
@@ -21,6 +26,14 @@ public class DynamicTaskService extends ServiceImpl<DynamicTaskMapper, DynamicTa
         return getOne(wrapper);
     }
 
+
+    public List<DynamicTask> getDynamicTaskByNames(Collection<String> names) {
+        if (CollectionUtils.isEmpty(names)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<DynamicTask> wrapper = Wrappers.lambdaQuery(DynamicTask.class).in(DynamicTask::getTaskName, names.toArray());
+        return list(wrapper);
+    }
 }
 
 

@@ -10,7 +10,7 @@ import java.time.LocalTime;
  * Date: 2024/11/11.
  * Time:23:46
  */
-@Component
+//@Component
 public class SpringAnnotationSchedulerTask {
 
     @Scheduled(fixedDelay = 2000)

@@ -31,6 +31,10 @@ public class DynamicTask implements Serializable {
      */
     private String cron;
 
+
+
+    private Integer status;
+
     /**
      * 
      */
