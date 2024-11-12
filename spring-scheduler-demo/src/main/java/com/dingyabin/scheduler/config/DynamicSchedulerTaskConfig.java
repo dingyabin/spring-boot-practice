@@ -57,7 +57,7 @@ public class DynamicSchedulerTaskConfig implements SchedulingConfigurer {
             return;
         }
         for (SimpleSchedulerTask simpleSchedulerTask : simpleSchedulerTasks) {
-            taskRegistrar.addTriggerTask(simpleSchedulerTask::execute, triggerContext -> {
+            taskRegistrar.addTriggerTask(simpleSchedulerTask, triggerContext -> {
                 String uniqueTaskName = simpleSchedulerTask.getUniqueTaskName();
                 DynamicTask dynamicTask = dynamicTaskService.getDynamicTaskByName(uniqueTaskName);
                 if (dynamicTask == null) {
@@ -73,16 +73,14 @@ public class DynamicSchedulerTaskConfig implements SchedulingConfigurer {
 
 
     /**
-     *
      * 如果没有 SchedulingConfigurer、TaskScheduler、 ScheduledExecutorService 这几个bean 那么spring
      * 会默认注册一个ThreadPoolTaskScheduler(用到配置文件里的配置)，现在自定义了一个SchedulingConfigurer, 默认注册会失效
      * 需要自己注册一个ThreadPoolTaskScheduler的bean, 可以选择使用配置文件里的配置(TaskSchedulerBuilder)
      *
-     * @see TaskSchedulingAutoConfiguration
-     * @see ScheduledAnnotationBeanPostProcessor#finishRegistration
-     *
      * @param builder
      * @return ThreadPoolTaskScheduler
+     * @see TaskSchedulingAutoConfiguration
+     * @see ScheduledAnnotationBeanPostProcessor#finishRegistration
      */
     @Bean
     public ThreadPoolTaskScheduler taskScheduler(TaskSchedulerBuilder builder) {

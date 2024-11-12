@@ -5,13 +5,8 @@ package com.dingyabin.scheduler.api;
  * Date: 2024/11/12.
  * Time:0:00
  */
-public abstract class SimpleSchedulerTask {
-
+public abstract class SimpleSchedulerTask implements Runnable {
 
     public abstract String getUniqueTaskName();
-
-
-    public abstract void execute();
-
 
 }

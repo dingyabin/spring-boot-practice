@@ -19,7 +19,7 @@ public class DynamicSchedulerTask extends SimpleSchedulerTask {
     }
 
     @Override
-    public void execute() {
-        System.out.println("<<<<<<<<<<<<<<<<这是自定义的动态定时任务: "+ Thread.currentThread().getName()+ " " + LocalTime.now());
+    public void run() {
+        System.out.println("<<<<<<<<<<<<<<<<这是自定义的动态定时任务: " + Thread.currentThread().getName() + " " + LocalTime.now());
     }
 }
