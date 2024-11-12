@@ -9,6 +9,7 @@ spring:
       pool:
         size: 3
       thread-name-prefix: customer-scheduling-
+      dynamicSchedulerTaskStartAndStop: false
 
   #数据库配置
   datasource:

@@ -5,6 +5,7 @@ import com.dingyabin.scheduler.model.DynamicTask;
 import com.dingyabin.scheduler.service.impl.DynamicTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * Time:22:48
  */
 @Configuration
+@ConditionalOnProperty(prefix = "spring.task.scheduling", name = "dynamicSchedulerTaskStartAndStop", havingValue = "true" )
 @ConditionalOnBean(value = ScheduledAnnotationBeanPostProcessor.class)
 public class DynamicSchedulerTaskSwitchConfig {
 
