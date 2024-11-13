@@ -11,7 +11,7 @@
  Target Server Version : 50729 (5.7.29-log)
  File Encoding         : 65001
 
- Date: 12/11/2024 01:10:18
+ Date: 13/11/2024 17:01:18
 */
 
 SET NAMES utf8mb4;
@@ -25,6 +25,7 @@ CREATE TABLE `dynamic_task`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `task_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `cron` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `status` int(10) UNSIGNED NOT NULL DEFAULT 1,
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
@@ -34,4 +35,5 @@ CREATE TABLE `dynamic_task`  (
 -- ----------------------------
 -- Records of dynamic_task
 -- ----------------------------
-INSERT INTO `dynamic_task` VALUES (1, 'PRINT_DATA', '0/5 * * * * ?', '2024-11-12 00:36:46', '2024-11-12 00:48:47');
+INSERT INTO `dynamic_task` VALUES (1, 'PRINT_DATA', '0/4 * * * * ?', 0, '2024-11-12 00:36:46', '2024-11-13 03:37:59');
+
