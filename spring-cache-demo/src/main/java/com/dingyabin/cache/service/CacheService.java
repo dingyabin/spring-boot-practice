@@ -29,7 +29,7 @@ public class CacheService {
     @Cacheable(cacheNames = CaffeineSpringCacheConfig.CUSTOM_CACHE_1H, key = "#name")
     public String getObject1(String name) {
         System.out.println("new了一个String: " + name);
-        return new String(name);
+        return name;
     }
 
 
