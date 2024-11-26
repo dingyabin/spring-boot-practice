@@ -33,6 +33,7 @@
         <module>spring-data-sharding</module>
         <module>spring-resilience4j-demo</module>
         <module>spring-scheduler-demo</module>
+        <module>common-utils</module>
     </modules>
 
     <name>spring-boot-practice</name>
