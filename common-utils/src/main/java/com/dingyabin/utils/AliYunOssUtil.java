@@ -11,6 +11,8 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +30,8 @@ public class AliYunOssUtil {
     private static final String buckets = "dyb-tests";
 
     private static final OSS OSS_CLIENT;
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
 
     static {
@@ -62,7 +66,8 @@ public class AliYunOssUtil {
 
 
     private static String uuidName() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
+        String date = DATE_TIME_FORMATTER.format(LocalDate.now());
+        return date + "/" + UUID.randomUUID().toString().replaceAll("-", "");
     }
 
 }
