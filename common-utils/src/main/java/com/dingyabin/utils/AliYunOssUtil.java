@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 public class AliYunOssUtil {
 
-//    private static final String KEY_ID = "LTAI5t9gZN91Y3PCsVbb7RVV";
+//    private static final String KEY_ID
 //
-//    private static final String ACCESS_KEY = "243eUCG6b1PzKMRmkiZ75M0HKOiNYU";
+//    private static final String ACCESS_KEY
 
     private static final String endpoint = "https://oss-cn-beijing.aliyuncs.com";
 
