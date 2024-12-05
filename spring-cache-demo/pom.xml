@@ -44,6 +44,10 @@
             <groupId>com.dingyabin</groupId>
             <artifactId>redis-helper-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.dingyabin</groupId>
+            <artifactId>common-utils</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

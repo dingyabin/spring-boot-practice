@@ -9,8 +9,9 @@ import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyuncs.utils.StringUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -46,16 +47,20 @@ public class AliYunOssUtil {
 
     }
 
-
-    public static String putObject(File file) {
+    public static String putObject(String fileName, InputStream inputStream) {
         String key = uuidName();
-        String extension = FilenameUtils.getExtension(file.getName());
+        String extension = FilenameUtils.getExtension(fileName);
         if (!StringUtils.isEmpty(extension)) {
             key = key + "." + extension;
         }
-        PutObjectRequest objectRequest = new PutObjectRequest(buckets, key, file);
+        PutObjectRequest objectRequest = new PutObjectRequest(buckets, key, inputStream);
         OSS_CLIENT.putObject(objectRequest);
         return generateUrl(key, 1, TimeUnit.DAYS);
+    }
+
+
+    public static String putObject(File file) throws IOException {
+        return putObject(file.getName(), Files.newInputStream(file.toPath()));
     }
 
 
