@@ -16,6 +16,14 @@
 
     <packaging>pom</packaging>
 
+    <name>spring-boot-practice</name>
+
+    <properties>
+        <revision>0.0.1-SNAPSHOT</revision>
+        <java.version>1.8</java.version>
+    </properties>
+
+
     <modules>
         <module>spring-session</module>
         <module>prometheus-demo</module>
@@ -36,11 +44,6 @@
         <module>common-utils</module>
     </modules>
 
-    <name>spring-boot-practice</name>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -54,27 +57,27 @@
             <dependency>
                 <groupId>com.dingyabin</groupId>
                 <artifactId>redis-helper-starter</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dingyabin</groupId>
                 <artifactId>security-data-common</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dingyabin</groupId>
                 <artifactId>api-common</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dingyabin</groupId>
                 <artifactId>spring-web-common</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dingyabin</groupId>
                 <artifactId>common-utils</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -99,6 +102,36 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <!-- 添加flatten-maven-plugin插件 -->
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>flatten-maven-plugin</artifactId>-->
+<!--                <version>1.3.0</version>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; packing=pom的module也进行reversion变量替换，默认为false&ndash;&gt;-->
+<!--                    <updatePomFile>true</updatePomFile>-->
+<!--                    &lt;!&ndash; 只替换原始pom中的revision, sha1 and changelist，其他否保持原样&ndash;&gt;-->
+<!--                    <flattenMode>resolveCiFriendliesOnly</flattenMode>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    &lt;!&ndash;在process-resources阶段时会在父子project目录下生成.flattened-pom.xml(version已替换为具体值)&ndash;&gt;-->
+<!--                    &lt;!&ndash;运行install或deploy时会将.flattened-pom.xml替换原来的pom.xml&ndash;&gt;-->
+<!--                    <execution>-->
+<!--                        <id>flatten</id>-->
+<!--                        <phase>process-resources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>flatten</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>flatten.clean</id>-->
+<!--                        <phase>clean</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>clean</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
