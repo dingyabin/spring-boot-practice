@@ -6,7 +6,7 @@ spring:
     name: distributed-ids-tool
 #数据库配置
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/sys_common?useSSL=false&rewriteBatchedStatements=true&serverTimezone=Asia/Shanghai
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
@@ -18,7 +18,7 @@ spring:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:/mapper/**/*.xml
 
 

@@ -10,7 +10,7 @@ import java.time.LocalTime;
  * Date: 2024/11/12.
  * Time:0:35
  */
-@Component
+//@Component
 public class DynamicSchedulerTask extends SimpleSchedulerTask {
 
     @Override

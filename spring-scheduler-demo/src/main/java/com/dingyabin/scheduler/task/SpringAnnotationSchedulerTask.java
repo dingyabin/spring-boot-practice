@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @Component
 public class SpringAnnotationSchedulerTask {
 
-    @Scheduled(fixedDelay = 2000)
+    //@Scheduled(fixedDelay = 2000)
     public void execute(){
         System.out.println(">>>>>>>>>>>>>>这是Spring自带的@Scheduled注解的任务: "+ Thread.currentThread().getName()+ " " + LocalTime.now());
     }
