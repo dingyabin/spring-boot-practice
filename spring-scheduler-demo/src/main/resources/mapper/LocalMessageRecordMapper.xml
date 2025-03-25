@@ -4,13 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dingyabin.localmsg.mapper.LocalMessageRecordMapper">
 
-    <resultMap id="BaseResultMap" type="com.dingyabin.localmsg.entity.LocalMessageRecord">
+    <resultMap id="BaseResultMap" type="com.dingyabin.localmsg.model.entity.LocalMessageRecord">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="bizType" column="biz_type" jdbcType="VARCHAR"/>
             <result property="invokeCtx" column="invoke_ctx" jdbcType="VARCHAR"/>
             <result property="retryTime" column="retry_time" jdbcType="INTEGER"/>
             <result property="maxRetryTime" column="max_retry_time" jdbcType="INTEGER"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="status" column="status" jdbcType="VARCHAR" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>

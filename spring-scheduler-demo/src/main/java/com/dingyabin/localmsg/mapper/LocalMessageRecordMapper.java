@@ -1,7 +1,7 @@
 package com.dingyabin.localmsg.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.dingyabin.localmsg.entity.LocalMessageRecord;
+import com.dingyabin.localmsg.model.entity.LocalMessageRecord;
 
 /**
 * @author 丁亚宾

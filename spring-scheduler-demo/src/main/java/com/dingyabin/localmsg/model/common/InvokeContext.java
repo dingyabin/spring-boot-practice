@@ -1,4 +1,4 @@
-package com.dingyabin.localmsg.model;
+package com.dingyabin.localmsg.model.common;
 
 import lombok.Builder;
 import lombok.Data;

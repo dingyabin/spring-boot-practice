@@ -10,7 +10,7 @@ import java.util.List;
 public class MockService {
 
 
-    @LocalMessage(bizType = "TEST", maxRetryTime = 3)
+    @LocalMessage(bizType = "TEST", maxRetryTime = 3, sync = false)
     public Integer mock(String str, List<String> list, Student student) {
         System.out.printf("%s----%s-----%s", str, JSON.toJSONString(list), JSON.toJSONString(student));
         return 1;

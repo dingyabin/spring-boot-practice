@@ -25,7 +25,7 @@ public class MockController {
 
     @RequestMapping("/test2")
     public void localMessage2() {
-        invokeService.test();
+        //invokeService.test();
     }
 
 

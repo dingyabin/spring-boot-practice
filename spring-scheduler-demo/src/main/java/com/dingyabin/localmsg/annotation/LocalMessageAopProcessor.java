@@ -1,9 +1,9 @@
 package com.dingyabin.localmsg.annotation;
 
 import com.alibaba.fastjson2.JSON;
-import com.dingyabin.localmsg.entity.LocalMessageRecord;
-import com.dingyabin.localmsg.model.InvokeContext;
-import com.dingyabin.localmsg.service.LocalMessageRecordService;
+import com.dingyabin.localmsg.model.common.InvokeContext;
+import com.dingyabin.localmsg.model.entity.LocalMessageRecord;
+import com.dingyabin.localmsg.service.InvokeService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -24,7 +24,7 @@ public class LocalMessageAopProcessor {
 
 
     @Resource
-    private LocalMessageRecordService localMessageRecordService;
+    private InvokeService invokeService;
 
 
     @Around("@annotation(com.dingyabin.localmsg.annotation.LocalMessage)")
@@ -33,11 +33,13 @@ public class LocalMessageAopProcessor {
         if (!(signature instanceof MethodSignature)) {
             return joinPoint.proceed();
         }
+
         Method method = ((MethodSignature) signature).getMethod();
         LocalMessage localMessage = AnnotationUtils.findAnnotation(method, LocalMessage.class);
         if (localMessage == null) {
             return joinPoint.proceed();
         }
+
         List<String> parameterTypes = Arrays.stream(method.getParameterTypes()).map(Class::getName).collect(Collectors.toList());
         List<String> methodArgs = Arrays.stream(joinPoint.getArgs()).map(JSON::toJSONString).collect(Collectors.toList());
         InvokeContext invokeContext = InvokeContext.builder()
@@ -48,7 +50,9 @@ public class LocalMessageAopProcessor {
                 .build();
 
         LocalMessageRecord localMessageRecord = new LocalMessageRecord(localMessage.bizType(), invokeContext, localMessage.maxRetryTime());
-        localMessageRecordService.saveLocalMessageRecord(localMessageRecord);
+
+        invokeService.invokeLocalMessage(localMessageRecord, localMessage.sync());
+
         return null;
     }
 

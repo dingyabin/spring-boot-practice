@@ -1,14 +1,14 @@
-package com.dingyabin.localmsg.entity;
+package com.dingyabin.localmsg.model.entity;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import com.dingyabin.localmsg.model.InvokeContext;
+import com.dingyabin.localmsg.model.common.InvokeContext;
+import com.dingyabin.localmsg.model.enums.LocalMsgStatusEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -49,7 +49,7 @@ public class LocalMessageRecord implements Serializable {
     /**
      * 
      */
-    private Integer status;
+    private LocalMsgStatusEnum status;
 
     /**
      * 
@@ -71,6 +71,7 @@ public class LocalMessageRecord implements Serializable {
         setBizType(bizType);
         setInvokeCtx(JSON.toJSONString(invokeContext));
         setMaxRetryTime(maxRetryTime);
+        setRetryTime(0);
     }
 
 }
