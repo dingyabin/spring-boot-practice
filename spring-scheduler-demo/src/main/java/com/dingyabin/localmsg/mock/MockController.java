@@ -13,19 +13,16 @@ public class MockController {
     @Resource
     private MockService mockService;
 
-    @Resource
-    private InvokeService invokeService;
-
 
     @RequestMapping("/test")
-    public void localMessage() {
+    public void localMessage() throws InterruptedException {
         mockService.mock("test", Arrays.asList("abc", "123"), new Student());
     }
 
 
     @RequestMapping("/test2")
     public void localMessage2() {
-        //invokeService.test();
+        mockService.poll();
     }
 
 

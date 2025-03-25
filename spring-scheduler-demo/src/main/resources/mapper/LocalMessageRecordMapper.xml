@@ -10,7 +10,7 @@
             <result property="invokeCtx" column="invoke_ctx" jdbcType="VARCHAR"/>
             <result property="retryTime" column="retry_time" jdbcType="INTEGER"/>
             <result property="maxRetryTime" column="max_retry_time" jdbcType="INTEGER"/>
-            <result property="status" column="status" jdbcType="VARCHAR" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -21,4 +21,15 @@
         retry_time,max_retry_time,status,
         remark,create_time,update_time
     </sql>
+
+
+    <select id="selectRetryLocalMessage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM local_message_record WHERE status IN ('INIT', 'RETRY')
+        AND retry_time  <![CDATA[ < ]]>   max_retry_time
+        LIMIT #{size}
+    </select>
+
+
 </mapper>

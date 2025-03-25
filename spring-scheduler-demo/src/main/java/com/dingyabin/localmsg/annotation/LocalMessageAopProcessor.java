@@ -51,7 +51,7 @@ public class LocalMessageAopProcessor {
 
         LocalMessageRecord localMessageRecord = new LocalMessageRecord(localMessage.bizType(), invokeContext, localMessage.maxRetryTime());
 
-        invokeService.invokeLocalMessage(localMessageRecord, localMessage.sync());
+        invokeService.initAndInvokeLocalMessage(localMessageRecord, false, localMessage.sync());
 
         return null;
     }

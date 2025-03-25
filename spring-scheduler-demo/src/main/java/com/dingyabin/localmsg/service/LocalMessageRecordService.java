@@ -9,6 +9,8 @@ import com.dingyabin.localmsg.model.enums.LocalMsgStatusEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 /**
  * @author 丁亚宾
  * @description 针对表【local_message_record】的数据库操作Service实现
@@ -46,6 +48,11 @@ public class LocalMessageRecordService extends ServiceImpl<LocalMessageRecordMap
                 .setSql("retry_time = retry_time + 1")
                 .eq(LocalMessageRecord::getId, id);
         update(lambdaUpdate);
+    }
+
+
+    public List<LocalMessageRecord> findRetryLocalMessageRecord() {
+        return baseMapper.selectRetryLocalMessage(10);
     }
 
 }

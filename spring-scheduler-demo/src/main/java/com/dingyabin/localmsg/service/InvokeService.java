@@ -57,18 +57,21 @@ public class InvokeService implements InitializingBean, DisposableBean {
     }
 
 
-    public void invokeLocalMessage(LocalMessageRecord localMessage, boolean sync) {
+    public void initAndInvokeLocalMessage(LocalMessageRecord localMessage, boolean executeNow, boolean sync) {
         localMessageRecordService.saveLocalMessageRecord(localMessage);
-
-        if (isSynchronizationActive()) {
-            registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void afterCommit() {
-                    doInvoke(localMessage, sync);
-                }
-            });
+        if (!executeNow) {
+            return;
         }
-        doInvoke(localMessage, sync);
+        if (!isSynchronizationActive()) {
+            doInvoke(localMessage, sync);
+            return;
+        }
+        registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                doInvoke(localMessage, sync);
+            }
+        });
     }
 
 
@@ -81,7 +84,7 @@ public class InvokeService implements InitializingBean, DisposableBean {
     }
 
 
-    public void execute(LocalMessageRecord localMessage) {
+    private void execute(LocalMessageRecord localMessage) {
         try {
             InvokeContext invokeContext = JSONObject.parseObject(localMessage.getInvokeCtx(), InvokeContext.class);
 
