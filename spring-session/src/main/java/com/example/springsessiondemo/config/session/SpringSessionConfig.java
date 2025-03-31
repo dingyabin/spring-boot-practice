@@ -1,13 +1,14 @@
 package com.example.springsessiondemo.config.session;
 
-import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import com.example.springsessiondemo.intecepter.LoginCheckInterceptor;
 import com.example.springsessiondemo.intecepter.PermitCheckInterceptor;
 import com.example.springsessiondemo.intecepter.RoleCheckInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration;
 import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -28,9 +29,13 @@ public class SpringSessionConfig implements WebMvcConfigurer {
     }
 
 
+    /**
+     * @see RedisHttpSessionConfiguration
+     * @return RedisSerializer
+     */
     @Bean("springSessionDefaultRedisSerializer")
     public RedisSerializer springSessionDefaultRedisSerializer() {
-        return new FastJsonRedisSerializer<>(Object.class);
+        return new GenericJackson2JsonRedisSerializer();
     }
 
 

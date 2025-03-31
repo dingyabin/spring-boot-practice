@@ -1,6 +1,5 @@
 package com.example.springsessiondemo.intecepter;
 
-import com.alibaba.fastjson.JSONObject;
 import com.example.springsessiondemo.annotation.NoNeedLogin;
 import com.example.springsessiondemo.context.UserContext;
 import com.example.springsessiondemo.web.User;
@@ -34,7 +33,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             response.getWriter().println("未登录!");
             return false;
         }
-        UserContext.setCurrentUser(((JSONObject) user).toJavaObject(User.class));
+        UserContext.setCurrentUser((User)user);
         return true;
     }
 
