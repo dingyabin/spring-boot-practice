@@ -1,10 +1,6 @@
 local key = KEYS[1]
-local limit = tonumber(ARGV[1])
-local current = tonumber(redis.call('get', key) or "0")
-if current + 1 > limit then
-    return false
-else
-    redis.call('INCR', key)
-    redis.call('EXPIRE', key, ARGV[2])
-    return true
+local count = redis.call('INCR', key)
+if count == 1 then
+    redis.call('EXPIRE', key, ARGV[1])
 end
+return count

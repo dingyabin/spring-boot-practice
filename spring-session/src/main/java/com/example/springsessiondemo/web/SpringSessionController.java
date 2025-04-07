@@ -3,10 +3,10 @@ package com.example.springsessiondemo.web;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.dingyabin.redis.limiter.RedisLimiterHelper;
 import com.example.springsessiondemo.annotation.HasPermit;
 import com.example.springsessiondemo.annotation.HasRole;
 import com.example.springsessiondemo.annotation.NoNeedLogin;
-import com.example.springsessiondemo.config.limiter.RedisLimiterHelper;
 import com.example.springsessiondemo.context.UserContext;
 import com.example.springsessiondemo.entity.SnowflakWorkerId;
 import com.example.springsessiondemo.mapper.SnowflakWorkerIdMapper;
@@ -74,7 +74,7 @@ public class SpringSessionController {
     @NoNeedLogin
     @PostMapping(value = "/limit")
     public String limit() {
-        boolean king = redisLimiterHelper.tryAcquire("king", 3, 30, TimeUnit.SECONDS);
+        boolean king = redisLimiterHelper.tryAcquire("king", 13, 30, TimeUnit.SECONDS);
         return king +"";
     }
 

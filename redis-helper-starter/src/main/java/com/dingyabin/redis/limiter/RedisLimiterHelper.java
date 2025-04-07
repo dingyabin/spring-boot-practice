@@ -1,6 +1,6 @@
 package com.dingyabin.redis.limiter;
 
-import org.apache.commons.lang3.BooleanUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
  * Date: 2024/6/19.
  * Time:19:08
  */
+@Slf4j
 public class RedisLimiterHelper {
 
 
@@ -22,12 +23,12 @@ public class RedisLimiterHelper {
     private StringRedisTemplate stringRedisTemplate;
 
 
-    private final DefaultRedisScript<Boolean> luaLimiterRedisScript;
+    private final DefaultRedisScript<Long> luaLimiterRedisScript;
 
 
     public RedisLimiterHelper() {
         luaLimiterRedisScript = new DefaultRedisScript<>();
-        luaLimiterRedisScript.setResultType(Boolean.class);
+        luaLimiterRedisScript.setResultType(Long.class);
         luaLimiterRedisScript.setLocation(new ClassPathResource("script/RedisLimiterLuaScript.lua"));
     }
 
@@ -35,12 +36,12 @@ public class RedisLimiterHelper {
     public boolean tryAcquire(String limitKey, Integer count, Integer internal, TimeUnit timeUnit) {
         try {
             List<String> keys = Collections.singletonList(limitKey);
-            Boolean result = stringRedisTemplate.execute(luaLimiterRedisScript, keys, String.valueOf(count), String.valueOf(timeUnit.toSeconds(internal)));
-            return BooleanUtils.toBoolean(result);
+            Long result = stringRedisTemplate.execute(luaLimiterRedisScript, keys, String.valueOf(timeUnit.toSeconds(internal)));
+            return result != null && result <= count;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("RedisLimiterHelper error...", e);
         }
-        return false;
+        return true;
     }
 
 
