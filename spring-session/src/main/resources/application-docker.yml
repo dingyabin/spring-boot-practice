@@ -3,6 +3,11 @@ server:
   port: 8080
 
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 12345678
+    url: jdbc:mysql://localhost:3306/weight_manager?useSSL=false&rewriteBatchedStatements=true
   session:
     store-type: redis
   redis:
@@ -18,3 +23,9 @@ spring:
 limiter:
   redis:
     enable: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:/mapper/**/*.xml
