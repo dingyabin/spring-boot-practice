@@ -41,6 +41,7 @@ public class AsyncController {
                     bodyEmitter.send("你好，Hello World_" + i + "\r\n");
                 } catch (IOException e) {
                     e.printStackTrace();
+                    bodyEmitter.completeWithError(e);
                 }
                 _sleep(600);
             }
@@ -58,7 +59,7 @@ public class AsyncController {
             }
         };
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=orders.xlsx");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=FILE.xlsx");
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_OCTET_STREAM).body(responseBody);
     }
 
@@ -76,7 +77,7 @@ public class AsyncController {
             excelWriter.close();
         };
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=orders.xlsx");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=FILE.xlsx");
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_OCTET_STREAM).body(responseBody);
     }
 
