@@ -16,6 +16,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.FileInputStream;
@@ -48,6 +49,25 @@ public class AsyncController {
             bodyEmitter.complete();
         });
         return ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM).body(bodyEmitter);
+    }
+
+
+    @GetMapping(value = "/test4", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter SseEmitter() {
+        SseEmitter sseEmitter = new SseEmitter(10000L);
+        EXECUTOR_SERVICE.submit(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    sseEmitter.send(SseEmitter.event().id(String.valueOf(i)).data("你好，Hello World_" + i).build());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    sseEmitter.completeWithError(e);
+                }
+                _sleep(600);
+            }
+            sseEmitter.complete();
+        });
+        return sseEmitter;
     }
 
 
@@ -88,7 +108,7 @@ public class AsyncController {
     }
 
 
-    private List<ExcelModel> dataList(){
+    private List<ExcelModel> dataList() {
         List<ExcelModel> objects = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             objects.add(new ExcelModel("THIS IS " + i, new Date(), 1.0D));
