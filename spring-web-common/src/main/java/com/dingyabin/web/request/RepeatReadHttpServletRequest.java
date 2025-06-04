@@ -41,9 +41,6 @@ public class RepeatReadHttpServletRequest extends HttpServletRequestWrapper {
         if (contentType.toUpperCase().contains("APPLICATION/JSON")) {
             result = IOUtils.toString(getReader());
         }
-        if (result != null) {
-            result = result.replace("\n", "").replace("\r", "");
-        }
         return result;
     }
 
