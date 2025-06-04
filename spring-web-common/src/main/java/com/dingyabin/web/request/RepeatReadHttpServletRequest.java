@@ -1,6 +1,7 @@
 package com.dingyabin.web.request;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.util.StreamUtils;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -50,18 +51,19 @@ public class RepeatReadHttpServletRequest extends HttpServletRequestWrapper {
     @Override
     public ServletInputStream getInputStream() throws IOException {
         if (sourceData == null) {
-            sourceData = IOUtils.toByteArray(getRequest().getInputStream());
+            sourceData = StreamUtils.copyToByteArray(getRequest().getInputStream());
         }
         final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(sourceData);
 
         return new ServletInputStream() {
-            public int read() throws IOException {
+            @Override
+            public int read()  {
                 return byteArrayInputStream.read();
             }
 
             @Override
             public boolean isFinished() {
-                return false;
+                return byteArrayInputStream.available() == 0;
             }
 
             @Override
