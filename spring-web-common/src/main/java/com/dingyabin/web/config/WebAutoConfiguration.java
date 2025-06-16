@@ -13,7 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -56,8 +56,7 @@ public class WebAutoConfiguration {
 
 
     @Bean
-    @ConditionalOnProperty(prefix = "web.common.config", name = "enableJavaTimeModule", havingValue = "true", matchIfMissing = true)
-    public JavaTimeModule javaTimeModule() {
+    public Jackson2ObjectMapperBuilderCustomizer javaTimeModule() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern);
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
@@ -67,7 +66,7 @@ public class WebAutoConfiguration {
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
         javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(formatter));
         javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(formatter));
-        return javaTimeModule;
+        return builder -> builder.modulesToInstall(javaTimeModule);
     }
 
 }
