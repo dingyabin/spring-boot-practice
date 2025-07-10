@@ -1,6 +1,7 @@
 package com.dingyabin.distributeId.controller;
 
 import com.dingyabin.distributeId.service.impl.DataBaseRangeDistributeId;
+import com.dingyabin.distributeId.service.impl.LeafAllocDistributeId;
 import com.dingyabin.distributeId.service.impl.SnowflakeDistributeId;
 import com.dingyabin.response.Result;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,9 @@ public class IdController {
     @Resource
     private DataBaseRangeDistributeId dataBaseRangeDistributeId;
 
+    @Resource
+    private LeafAllocDistributeId leafAllocDistributeId;
+
     @RequestMapping("/get")
     public Result<Long> snowflakeDistributeIdTest() {
         return Result.success(snowflakeDistributeId.nextId());
@@ -39,6 +43,13 @@ public class IdController {
     public Result<Long> dataBaseRangeDistributeIdTest() {
         return Result.success(dataBaseRangeDistributeId.nextId());
     }
+
+
+    @RequestMapping("/get5")
+    public Result<Long> leafAllocDistributeIdTest() {
+        return Result.success(leafAllocDistributeId.nextId());
+    }
+
 
     @RequestMapping("/get3")
     public Result<Integer> dataBaseRangeDistributeIdBathTest() throws InterruptedException {
