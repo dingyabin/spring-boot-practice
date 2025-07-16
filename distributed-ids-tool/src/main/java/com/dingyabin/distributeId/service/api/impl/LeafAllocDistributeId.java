@@ -1,4 +1,4 @@
-package com.dingyabin.distributeId.service.impl;
+package com.dingyabin.distributeId.service.api.impl;
 
 import com.dingyabin.distributeId.model.LeafAlloc;
 import com.dingyabin.distributeId.model.leaf.Segment;

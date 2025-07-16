@@ -1,4 +1,4 @@
-package com.dingyabin.distributeId.service.impl;
+package com.dingyabin.distributeId.service.api.impl;
 
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;

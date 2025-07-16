@@ -1,10 +1,9 @@
 package com.dingyabin.distributeId.controller;
 
-import com.dingyabin.distributeId.service.impl.DataBaseRangeDistributeId;
-import com.dingyabin.distributeId.service.impl.LeafAllocDistributeId;
-import com.dingyabin.distributeId.service.impl.SnowflakeDistributeId;
+import com.dingyabin.distributeId.service.api.impl.DataBaseRangeDistributeId;
+import com.dingyabin.distributeId.service.api.impl.LeafAllocDistributeId;
+import com.dingyabin.distributeId.service.api.impl.SnowflakeDistributeId;
 import com.dingyabin.response.Result;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +13,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.IntStream;
 
 /**
  * @author 丁亚宾
