@@ -5,11 +5,13 @@
     <parent>
         <artifactId>spring-boot-practice</artifactId>
         <groupId>com.dingyabin</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${unified.version}</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-scheduler-demo</artifactId>
+
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

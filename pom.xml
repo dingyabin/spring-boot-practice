@@ -12,14 +12,14 @@
 
     <groupId>com.dingyabin</groupId>
     <artifactId>spring-boot-practice</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${unified.version}</version>
 
     <packaging>pom</packaging>
 
     <name>spring-boot-practice</name>
 
     <properties>
-        <revision>0.0.1-SNAPSHOT</revision>
+        <unified.version>0.0.1-SNAPSHOT</unified.version>
         <java.version>1.8</java.version>
         <mysql.version>8.0.33</mysql.version>
     </properties>
