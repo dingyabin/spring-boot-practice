@@ -12,14 +12,14 @@
 
     <groupId>com.dingyabin</groupId>
     <artifactId>spring-boot-practice</artifactId>
-    <version>${unified.version}</version>
+    <version>${revision}</version>
 
     <packaging>pom</packaging>
 
     <name>spring-boot-practice</name>
 
     <properties>
-        <unified.version>0.0.1-SNAPSHOT</unified.version>
+        <revision>0.0.1-SNAPSHOT</revision>
         <java.version>1.8</java.version>
         <mysql.version>8.0.33</mysql.version>
     </properties>
@@ -119,35 +119,35 @@
                 </configuration>
             </plugin>
             <!-- 添加flatten-maven-plugin插件 -->
-<!--            <plugin>-->
-<!--                <groupId>org.codehaus.mojo</groupId>-->
-<!--                <artifactId>flatten-maven-plugin</artifactId>-->
-<!--                <version>1.3.0</version>-->
-<!--                <configuration>-->
-<!--                    &lt;!&ndash; packing=pom的module也进行reversion变量替换，默认为false&ndash;&gt;-->
-<!--                    <updatePomFile>true</updatePomFile>-->
-<!--                    &lt;!&ndash; 只替换原始pom中的revision, sha1 and changelist，其他否保持原样&ndash;&gt;-->
-<!--                    <flattenMode>resolveCiFriendliesOnly</flattenMode>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    &lt;!&ndash;在process-resources阶段时会在父子project目录下生成.flattened-pom.xml(version已替换为具体值)&ndash;&gt;-->
-<!--                    &lt;!&ndash;运行install或deploy时会将.flattened-pom.xml替换原来的pom.xml&ndash;&gt;-->
-<!--                    <execution>-->
-<!--                        <id>flatten</id>-->
-<!--                        <phase>process-resources</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>flatten</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>flatten.clean</id>-->
-<!--                        <phase>clean</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>clean</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.3.0</version>
+                <configuration>
+                    <!-- packing=pom的module也进行reversion变量替换，默认为false-->
+                    <updatePomFile>true</updatePomFile>
+                    <!-- 只替换原始pom中的revision, sha1 and changelist，其他否保持原样-->
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <!--在process-resources阶段时会在父子project目录下生成.flattened-pom.xml(version已替换为具体值)-->
+                    <!--运行install或deploy时会将.flattened-pom.xml替换原来的pom.xml-->
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
