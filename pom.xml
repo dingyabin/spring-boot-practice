@@ -128,6 +128,8 @@
                     <updatePomFile>true</updatePomFile>
                     <!-- 只替换原始pom中的revision, sha1 and changelist，其他否保持原样-->
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <!-- 将输出文件放在target目录下 -->
+                    <outputDirectory>${project.build.directory}</outputDirectory>
                 </configuration>
                 <executions>
                     <!--在process-resources阶段时会在父子project目录下生成.flattened-pom.xml(version已替换为具体值)-->
