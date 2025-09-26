@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingyabin.captcha.mapper.ImageCaptchaMapper;
 import com.dingyabin.captcha.model.ImageCaptcha;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +74,7 @@ public class ImageCaptchaService extends ServiceImpl<ImageCaptchaMapper, ImageCa
         Collections.shuffle(rightImageCaptcha);
         List<String> imageCaptchaResult = new ArrayList<>(IMAGE_CAPTCHA_SIZE);
         //计算需要放置正确图片的位置索引
-        Collection<Integer> rightImageCaptchaIndex = getRightImageCaptchaIndex(randomCaptcha);
+        Collection<Integer> rightImageCaptchaIndex = getRightImageCaptchaIndex();
         List<String> errorImageCaptcha = Collections.emptyList();
         //需要填充错误的图片
         if (rightImageCaptchaIndex.size() < IMAGE_CAPTCHA_SIZE) {
@@ -95,6 +94,10 @@ public class ImageCaptchaService extends ServiceImpl<ImageCaptchaMapper, ImageCa
     }
 
 
+    /**
+     * 计算需要放置正确图片的位置索引
+     * @return 正确图片的位置索引
+     */
     private Collection<Integer> getRightImageCaptchaIndex(ImageCaptcha randomCaptcha) {
         Set<Integer> rightImageCaptchaIndex = new HashSet<>();
         for (int i = 0; i < IMAGE_CAPTCHA_SIZE; i++) {
@@ -109,6 +112,19 @@ public class ImageCaptchaService extends ServiceImpl<ImageCaptchaMapper, ImageCa
         return rightImageCaptchaIndex;
     }
 
+
+    /**
+     * 计算需要放置正确图片的位置索引
+     * @return 正确图片的位置索引
+     */
+    private Collection<Integer> getRightImageCaptchaIndex() {
+        Set<Integer> rightImageCaptchaIndex = new HashSet<>();
+        int rightCount = RandomUtil.randomInt(1, IMAGE_CAPTCHA_SIZE + 1);
+        for (int i = 0; i < rightCount; i++) {
+            rightImageCaptchaIndex.add(RandomUtil.randomInt(0, IMAGE_CAPTCHA_SIZE));
+        }
+        return rightImageCaptchaIndex;
+    }
 
 
     /**
