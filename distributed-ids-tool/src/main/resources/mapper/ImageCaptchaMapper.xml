@@ -9,12 +9,13 @@
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="image" column="image" jdbcType="OTHER" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
             <result property="confuseImg" column="confuse_img" jdbcType="OTHER"  typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+            <result property="imageSize" column="image_size" jdbcType="INTEGER"/>
             <result property="confuse" column="confuse" jdbcType="TINYINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,name,image,
-        confuse_img,confuse,create_time
+        confuse_img,image_size,confuse,create_time
     </sql>
 </mapper>

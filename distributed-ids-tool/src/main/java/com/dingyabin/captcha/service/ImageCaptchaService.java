@@ -11,10 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -76,28 +73,42 @@ public class ImageCaptchaService extends ServiceImpl<ImageCaptchaMapper, ImageCa
         List<String> rightImageCaptcha = randomCaptcha.getImage();
         //打乱顺序，防止每次都一样
         Collections.shuffle(rightImageCaptcha);
-        int errorImageCaptchaCount = 0;
         List<String> imageCaptchaResult = new ArrayList<>(IMAGE_CAPTCHA_SIZE);
-        for (int i = 0; i < IMAGE_CAPTCHA_SIZE; i++) {
-            if (RandomUtil.randomBoolean() && !rightImageCaptcha.isEmpty()) {
-                //随机位置放置正确的图片
-                imageCaptchaResult.add(rightImageCaptcha.remove(rightImageCaptcha.size() - 1));
-                System.out.println("--"+ (i+1));
-            } else {
-                //否则放置错误的图片, 计一下数
-                errorImageCaptchaCount++;
-                imageCaptchaResult.add(StringUtils.EMPTY);
-            }
+        //计算需要放置正确图片的位置索引
+        Collection<Integer> rightImageCaptchaIndex = getRightImageCaptchaIndex(randomCaptcha);
+        List<String> errorImageCaptcha = Collections.emptyList();
+        //需要填充错误的图片
+        if (rightImageCaptchaIndex.size() < IMAGE_CAPTCHA_SIZE) {
+            //获取错误的验证码
+            errorImageCaptcha = getWrongImageCaptcha(randomCaptcha, IMAGE_CAPTCHA_SIZE - rightImageCaptchaIndex.size());
         }
-        //获取错误的验证码
-        List<String> errorImageCaptcha = getWrongImageCaptcha(randomCaptcha, errorImageCaptchaCount);
-        for (int i = 0; i < imageCaptchaResult.size(); i++) {
-            if (StringUtils.isEmpty(imageCaptchaResult.get(i))) {
-                imageCaptchaResult.set(i, errorImageCaptcha.remove(0));
+        for (int i = 0; i < IMAGE_CAPTCHA_SIZE; i++) {
+            if (rightImageCaptchaIndex.contains(i)) {
+                //这个位置放置正确的图片
+                imageCaptchaResult.add(rightImageCaptcha.remove(rightImageCaptcha.size() - 1));
+            } else {
+                //否则放置错误的图片
+                imageCaptchaResult.add(errorImageCaptcha.remove(0));
             }
         }
         return imageCaptchaResult;
     }
+
+
+    private Collection<Integer> getRightImageCaptchaIndex(ImageCaptcha randomCaptcha) {
+        Set<Integer> rightImageCaptchaIndex = new HashSet<>();
+        for (int i = 0; i < IMAGE_CAPTCHA_SIZE; i++) {
+            if (RandomUtil.randomBoolean() && rightImageCaptchaIndex.size() < randomCaptcha.getImage().size()) {
+                rightImageCaptchaIndex.add(i);
+            }
+        }
+        //兜底
+        if (rightImageCaptchaIndex.isEmpty()) {
+            rightImageCaptchaIndex.add(RandomUtil.randomInt(0, IMAGE_CAPTCHA_SIZE));
+        }
+        return rightImageCaptchaIndex;
+    }
+
 
 
     /**
@@ -108,7 +119,7 @@ public class ImageCaptchaService extends ServiceImpl<ImageCaptchaMapper, ImageCa
      * @return 错误的验证码
      */
     private List<String> getWrongImageCaptcha(ImageCaptcha randomCaptcha, int errorImageCaptchaCount) {
-        List<String> errorImageCaptcha = new ArrayList<>();
+        List<String> errorImageCaptcha = new LinkedList<>();
         if (isNotEmpty(randomCaptcha.getConfuseImg())) {
             errorImageCaptcha.addAll(randomCaptcha.getConfuseImg());
             Collections.shuffle(errorImageCaptcha);

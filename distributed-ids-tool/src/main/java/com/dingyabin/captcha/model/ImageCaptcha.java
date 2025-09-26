@@ -41,6 +41,9 @@ public class ImageCaptcha implements Serializable {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> confuseImg;
 
+
+    private Integer imageSize;
+
     /**
      * 是否是混淆图片
      */
