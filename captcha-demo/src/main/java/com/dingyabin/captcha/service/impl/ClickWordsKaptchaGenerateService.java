@@ -1,6 +1,8 @@
 package com.dingyabin.captcha.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.dingyabin.captcha.pojo.KaptchaWord;
+import com.dingyabin.captcha.pojo.PointLocation;
 import com.dingyabin.captcha.service.KaptchaGenerateService;
 import com.dingyabin.captcha.service.ResourceManager;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,11 +35,20 @@ public class ClickWordsKaptchaGenerateService implements KaptchaGenerateService 
         BufferedImage bufferedImage = resourceManager.randomBgImage();
         Graphics graphics = bufferedImage.getGraphics();
         configGraphics(graphics);
-        List<String> words = randomWords(3);
-        for (int i = 0; i < words.size(); i++) {
-            graphics.drawString(words.get(i), i == 0 ? RandomUtil.randomInt(10, 50) : i * 80, RandomUtil.randomInt(40, 100));
+        List<KaptchaWord> kaptchaWords = randomKaptchaWords(3);
+        //按照顺序写入底图
+        for (KaptchaWord kaptchaWord : kaptchaWords) {
+            PointLocation pointLocation = kaptchaWord.getPointLocation();
+            graphics.drawString(kaptchaWord.getWord(), pointLocation.getX(), pointLocation.getY());
         }
-
+        //打乱顺序
+        Collections.shuffle(kaptchaWords);
+        //随机删除一个
+        kaptchaWords.remove(RandomUtil.randomInt(0, kaptchaWords.size()));
+        //剩下的写入redis做记录
+        for (KaptchaWord kaptchaWord : kaptchaWords) {
+            System.out.println(kaptchaWord);
+        }
         initImageResponseHeader(response);
         try (ServletOutputStream outputStream = response.getOutputStream()) {
             ImageIO.write(bufferedImage, "jpg", outputStream);
@@ -67,10 +78,21 @@ public class ClickWordsKaptchaGenerateService implements KaptchaGenerateService 
     }
 
 
-    private List<String> randomWords(int count) {
+    private List<KaptchaWord> randomKaptchaWords(int count) {
         List<String> wordsList = Arrays.stream(WORDS).collect(Collectors.toCollection(LinkedList::new));
         //打乱顺序
         Collections.shuffle(wordsList);
-        return wordsList.subList(0, count);
+        List<String> randomWords = wordsList.subList(0, count);
+        List<KaptchaWord> randomKaptcha = new LinkedList<>();
+        for (int i = 0; i < randomWords.size(); i++) {
+            randomKaptcha.add(new KaptchaWord(randomWords.get(i), randomPoint(i)));
+        }
+        return randomKaptcha;
     }
+
+
+    private PointLocation randomPoint(int index) {
+        return new PointLocation(index == 0 ? RandomUtil.randomInt(10, 40) : index * 80, RandomUtil.randomInt(30, 90));
+    }
+
 }
