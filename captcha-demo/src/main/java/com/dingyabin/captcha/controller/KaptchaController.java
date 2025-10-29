@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 public class KaptchaController {
 
 
-    @Resource
+    @Resource(name = "clickWordsKaptchaGenerateService")
     private KaptchaGenerateService kaptchaGenerateService;
 
 
