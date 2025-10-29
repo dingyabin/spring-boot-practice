@@ -32,14 +32,14 @@ public class CaptchaConfig {
         // 字体大小
         properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_SIZE, "60");
         // 字体颜色（可选）
-        properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_COLOR, "green");
+        properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_COLOR, "102,187,106");
         // 干扰线颜色
         properties.setProperty(Constants.KAPTCHA_NOISE_COLOR, "blue");
         properties.setProperty(Constants.KAPTCHA_NOISE_IMPL, DefaultNoise.class.getName());
         properties.setProperty(Constants.KAPTCHA_OBSCURIFICATOR_IMPL, WaterRipple.class.getName());
         // 背景色（RGB）
-        properties.setProperty(Constants.KAPTCHA_BACKGROUND_CLR_FROM, "lightGray");
-        properties.setProperty(Constants.KAPTCHA_BACKGROUND_CLR_TO, "white");
+        properties.setProperty(Constants.KAPTCHA_BACKGROUND_CLR_FROM, "255,249,196");
+        properties.setProperty(Constants.KAPTCHA_BACKGROUND_CLR_TO, "255,235,238");
         // 边框
         properties.setProperty(Constants.KAPTCHA_BORDER, "no");
         properties.setProperty(Constants.KAPTCHA_BORDER_COLOR, "105,179,90");

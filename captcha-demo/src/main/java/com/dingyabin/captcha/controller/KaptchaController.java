@@ -29,4 +29,9 @@ public class KaptchaController {
     }
 
 
+    @RequestMapping("/get2")
+    public Result<String> createKaptcha2(HttpServletRequest request, HttpServletResponse response) {
+        String base64Kaptcha = kaptchaGenerateService.createBase64Kaptcha(request, response);
+        return Result.success(base64Kaptcha);
+    }
 }
