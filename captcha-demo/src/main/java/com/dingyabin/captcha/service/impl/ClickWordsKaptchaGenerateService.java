@@ -41,11 +41,11 @@ public class ClickWordsKaptchaGenerateService implements KaptchaGenerateService 
             PointLocation pointLocation = kaptchaWord.getPointLocation();
             graphics.drawString(kaptchaWord.getWord(), pointLocation.getX(), pointLocation.getY());
         }
-        //打乱顺序
-        Collections.shuffle(kaptchaWords);
         //随机删除一个
         kaptchaWords.remove(RandomUtil.randomInt(0, kaptchaWords.size()));
-        //剩下的写入redis做记录
+        //剩下的打乱顺序
+        Collections.shuffle(kaptchaWords);
+        //写入redis做记录
         for (KaptchaWord kaptchaWord : kaptchaWords) {
             System.out.println(kaptchaWord);
         }
