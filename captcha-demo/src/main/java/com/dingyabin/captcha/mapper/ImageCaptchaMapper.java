@@ -1,7 +1,7 @@
 package com.dingyabin.captcha.mapper;
 
-import com.dingyabin.captcha.model.ImageCaptcha;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.dingyabin.captcha.model.ImageCaptcha;
 
 /**
 * @author 丁亚宾

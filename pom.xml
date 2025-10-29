@@ -43,6 +43,7 @@
         <module>spring-resilience4j-demo</module>
         <module>spring-scheduler-demo</module>
         <module>common-utils</module>
+        <module>captcha-demo</module>
     </modules>
 
 
