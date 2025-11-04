@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.dingyabin</groupId>
         <artifactId>spring-boot-practice</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>captcha-demo</artifactId>
