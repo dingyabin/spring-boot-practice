@@ -57,6 +57,8 @@
     </dependencies>
 
     <build>
+        <finalName>captcha-demo</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -69,6 +71,34 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+
+            <!-- 复制部署脚本到 target 目录 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-scripts</id>
+                        <phase>package</phase> <!-- 在 package 阶段后执行 -->
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <!-- 复制 src/main/scripts 下的所有内容到 target/ -->
+                                <!--${project.build.directory} 默认就是 target,  ${project.basedir} 是项目根目录-->
+                                <copy todir="${project.build.directory}/scripts">
+                                    <!-- includes="**/*" 表示复制 bin 目录下的所有文件（包括子目录）-->
+                                    <fileset dir="${project.basedir}/src/main/scripts" includes="**/*"/>
+                                </copy>
+                                <!-- 设置脚本可执行权限（Linux/macOS） -->
+                                <chmod dir="${project.build.directory}/bin" perm="755" includes="*.sh"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
