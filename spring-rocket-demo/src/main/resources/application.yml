@@ -1,0 +1,25 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: spring-rocket-demo
+
+web:
+  common:
+    config:
+      printIp: true
+      printHeader: true
+
+
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss}-[%X{traceId}]-[%thread]-[%level] - %logger{10} - %msg%n'
+
+
+rocket:
+  nameServ: localhost:9876
+  product:
+    groupName: TEST_GROUP
+  consume:
+    groupName: TEST_CONSUMER_GROUP
