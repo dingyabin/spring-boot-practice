@@ -3,6 +3,7 @@ package com.dingyabin.distributeId.controller;
 import com.dingyabin.distributeId.service.api.impl.DataBaseRangeDistributeId;
 import com.dingyabin.distributeId.service.api.impl.LeafAllocDistributeId;
 import com.dingyabin.distributeId.service.api.impl.SnowflakeDistributeId;
+import com.dingyabin.distributeId.vo.IpWorkerConfigVo;
 import com.dingyabin.response.Result;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,5 +83,10 @@ public class IdController {
     @RequestMapping("/get4")
     public Result<Map<String, String>> get4(@RequestBody Map<String, String> map) {
         return Result.success(map);
+    }
+
+    @RequestMapping("/get6")
+    public Result<IpWorkerConfigVo> get6() {
+        return Result.success(new IpWorkerConfigVo());
     }
 }
