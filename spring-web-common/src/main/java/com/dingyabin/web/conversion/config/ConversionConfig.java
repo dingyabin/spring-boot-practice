@@ -39,6 +39,9 @@ public class ConversionConfig {
 
     @PostConstruct
     public void init() {
+        if (Objects.isNull(list)) {
+            return;
+        }
         Map<String, ConversionInterface<?>> map = new HashMap<>(list.size());
         for (ConversionInterface<?> trans : list) {
             if (trans.getClass().isAnnotationPresent(ConversionType.class)) {
