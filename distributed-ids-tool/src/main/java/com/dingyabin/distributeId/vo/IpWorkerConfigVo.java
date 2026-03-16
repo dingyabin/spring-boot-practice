@@ -1,6 +1,6 @@
 package com.dingyabin.distributeId.vo;
 
-import com.dingyabin.web.translate.annotation.Translation;
+import com.dingyabin.web.conversion.annotation.Conversion;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,7 +26,7 @@ public class IpWorkerConfigVo implements Serializable {
     /**
      *
      */
-    @Translation(translationType = "test", mapper = "ip")
+    @Conversion(conversionType = "test", mapper = "ip")
     private String random;
 
 }

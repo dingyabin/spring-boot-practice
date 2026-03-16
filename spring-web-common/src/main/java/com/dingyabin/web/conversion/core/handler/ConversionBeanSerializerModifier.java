@@ -1,4 +1,4 @@
-package com.dingyabin.web.translate.core.handler;
+package com.dingyabin.web.conversion.core.handler;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -13,15 +13,15 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public class TranslationBeanSerializerModifier extends BeanSerializerModifier {
+public class ConversionBeanSerializerModifier extends BeanSerializerModifier {
 
     @Override
     public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription beanDesc,
                                                      List<BeanPropertyWriter> beanProperties) {
         for (BeanPropertyWriter writer : beanProperties) {
-            // 如果序列化器为 TranslationHandler 的话 将 Null 值也交给他处理
+            // 如果序列化器为 ConversionSerializer 的话 将 Null 值也交给他处理
             JsonSerializer<Object> serializer = writer.getSerializer();
-            if (serializer instanceof TranslationHandler) {
+            if (serializer instanceof ConversionSerializer) {
                 writer.assignNullSerializer(serializer);
             }
         }

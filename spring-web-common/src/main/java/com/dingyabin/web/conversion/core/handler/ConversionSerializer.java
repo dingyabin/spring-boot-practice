@@ -1,9 +1,9 @@
-package com.dingyabin.web.translate.core.handler;
+package com.dingyabin.web.conversion.core.handler;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
-import com.dingyabin.web.translate.annotation.Translation;
-import com.dingyabin.web.translate.core.TranslationInterface;
+import com.dingyabin.web.conversion.annotation.Conversion;
+import com.dingyabin.web.conversion.core.ConversionInterface;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -24,22 +24,22 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Lion Li
  */
 @Slf4j
-public class TranslationHandler extends JsonSerializer<Object> implements ContextualSerializer {
+public class ConversionSerializer extends JsonSerializer<Object> implements ContextualSerializer {
 
     /**
      * 全局翻译实现类映射器
      */
-    public static final Map<String, TranslationInterface<?>> TRANSLATION_MAPPER = new ConcurrentHashMap<>();
+    public static final Map<String, ConversionInterface<?>> TRANSLATION_MAPPER = new ConcurrentHashMap<>();
 
-    private Translation translation;
+    private Conversion conversion;
 
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        TranslationInterface<?> trans = TRANSLATION_MAPPER.get(translation.translationType());
+        ConversionInterface<?> trans = TRANSLATION_MAPPER.get(conversion.conversionType());
         if (ObjectUtil.isNotNull(trans)) {
             // 如果映射字段不为空 则取映射字段的值
-            if (StringUtils.hasText(translation.mapper())) {
-                value = ReflectUtil.getFieldValue(gen.currentValue(), translation.mapper());
+            if (StringUtils.hasText(conversion.mapper())) {
+                value = ReflectUtil.getFieldValue(gen.currentValue(), conversion.mapper());
             }
             // 如果为 null 直接写出
             if (ObjectUtil.isNull(value)) {
@@ -47,10 +47,10 @@ public class TranslationHandler extends JsonSerializer<Object> implements Contex
                 return;
             }
             try {
-                Object result = trans.translation(value, translation.other());
+                Object result = trans.translation(value, conversion.extra());
                 gen.writeObject(result);
             } catch (Exception e) {
-                log.error("翻译处理异常，type: {}, value: {}", translation.translationType(), value, e);
+                log.error("翻译处理异常，type: {}, value: {}", conversion.conversionType(), value, e);
                 // 出现异常时输出原始值而不是中断序列化
                 gen.writeObject(value);
             }
@@ -61,9 +61,9 @@ public class TranslationHandler extends JsonSerializer<Object> implements Contex
 
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
-        Translation translation = property.getAnnotation(Translation.class);
-        if (Objects.nonNull(translation)) {
-            this.translation = translation;
+        Conversion convert = property.getAnnotation(Conversion.class);
+        if (Objects.nonNull(convert)) {
+            this.conversion = convert;
             return this;
         }
         return prov.findValueSerializer(property.getType(), property);

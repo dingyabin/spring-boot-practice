@@ -1,4 +1,4 @@
-package com.dingyabin.web.translate.core;
+package com.dingyabin.web.conversion.core;
 
 
 
@@ -7,7 +7,7 @@ package com.dingyabin.web.translate.core;
  *
  * @author Lion Li
  */
-public interface TranslationInterface<T> {
+public interface ConversionInterface<T> {
     /**
      * 翻译
      *

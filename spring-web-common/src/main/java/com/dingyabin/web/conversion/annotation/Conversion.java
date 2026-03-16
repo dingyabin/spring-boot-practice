@@ -1,6 +1,6 @@
-package com.dingyabin.web.translate.annotation;
+package com.dingyabin.web.conversion.annotation;
 
-import com.dingyabin.web.translate.core.handler.TranslationHandler;
+import com.dingyabin.web.conversion.core.handler.ConversionSerializer;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -16,15 +16,15 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Documented
 @JacksonAnnotationsInside
-@JsonSerialize(using = TranslationHandler.class)
-public @interface Translation {
+@JsonSerialize(using = ConversionSerializer.class)
+public @interface Conversion {
 
     /**
-     * 类型 (需与实现类的 {@link TranslationType} 注解type对应)
+     * 类型 (需与实现类的 {@link ConversionType} 注解type对应)
      * <p>
-     * 默认取当前字段的值 如果设置了 @{@link Translation#mapper()} 则取映射字段的值
+     * 默认取当前字段的值 如果设置了 @{@link Conversion#mapper()} 则取映射字段的值
      */
-    String translationType();
+    String conversionType();
 
     /**
      * 映射字段 (如果不为空则取此字段的值)
@@ -34,6 +34,6 @@ public @interface Translation {
     /**
      * 其他条件
      */
-    String other() default "";
+    String extra() default "";
 
 }
