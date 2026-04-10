@@ -45,6 +45,7 @@
         <module>common-utils</module>
         <module>captcha-demo</module>
         <module>spring-rocket-demo</module>
+        <module>spring-jdbc-dao</module>
     </modules>
 
 
@@ -80,6 +81,11 @@
             <dependency>
                 <groupId>com.dingyabin</groupId>
                 <artifactId>common-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dingyabin</groupId>
+                <artifactId>spring-jdbc-dao</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
