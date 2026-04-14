@@ -16,6 +16,10 @@ spring:
       password: 12345678
 
 mybatis-plus:
+  encrypt:
+    enable: false
+    encryptKey: 9)t!$^cUDLCxP.s0
+  type-aliases-package: com.dingyabin.captcha.model
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

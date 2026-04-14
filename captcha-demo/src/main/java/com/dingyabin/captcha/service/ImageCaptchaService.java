@@ -74,7 +74,7 @@ public class ImageCaptchaService extends ServiceImpl<ImageCaptchaMapper, ImageCa
         Collections.shuffle(rightImageCaptcha);
         List<String> imageCaptchaResult = new ArrayList<>(IMAGE_CAPTCHA_SIZE);
         //计算需要放置正确图片的位置索引
-        Collection<Integer> rightImageCaptchaIndex = getRightImageCaptchaIndex();
+        Collection<Integer> rightImageCaptchaIndex = getRightImageCaptchaIndex(rightImageCaptcha.size());
         List<String> errorImageCaptcha = Collections.emptyList();
         //需要填充错误的图片
         if (rightImageCaptchaIndex.size() < IMAGE_CAPTCHA_SIZE) {
@@ -117,9 +117,9 @@ public class ImageCaptchaService extends ServiceImpl<ImageCaptchaMapper, ImageCa
      * 计算需要放置正确图片的位置索引
      * @return 正确图片的位置索引
      */
-    private Collection<Integer> getRightImageCaptchaIndex() {
+    private Collection<Integer> getRightImageCaptchaIndex(int max) {
         Set<Integer> rightImageCaptchaIndex = new HashSet<>();
-        int rightCount = RandomUtil.randomInt(1, IMAGE_CAPTCHA_SIZE + 1);
+        int rightCount = RandomUtil.randomInt(1, max + 1);
         for (int i = 0; i < rightCount; i++) {
             rightImageCaptchaIndex.add(RandomUtil.randomInt(0, IMAGE_CAPTCHA_SIZE));
         }
