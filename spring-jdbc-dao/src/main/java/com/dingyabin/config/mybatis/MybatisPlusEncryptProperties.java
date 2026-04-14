@@ -12,6 +12,7 @@ public class MybatisPlusEncryptProperties {
 
     public static final String ENCRYPT_PREFIX = Constants.MYBATIS_PLUS + ".encrypt";
 
+    private Boolean enable;
 
     private String encryptKey;
 
