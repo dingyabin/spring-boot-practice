@@ -1,7 +1,7 @@
 package com.dingyabin.config.mybatis.intercept;
 
 import com.dingyabin.config.mybatis.MybatisMetaHelper;
-import lombok.AllArgsConstructor;
+import com.dingyabin.config.mybatis.MybatisPlusEncryptProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.plugin.Interceptor;
@@ -9,6 +9,7 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
 
+import javax.annotation.Resource;
 import java.sql.Statement;
 
 /**
@@ -23,8 +24,10 @@ import java.sql.Statement;
         method = "handleResultSets",
         args = {Statement.class})
 })
-@AllArgsConstructor
 public class MybatisDecryptInterceptor implements Interceptor {
+
+    @Resource
+    private MybatisPlusEncryptProperties mybatisPlusEncryptProperties;
 
 
     @Override
@@ -32,7 +35,7 @@ public class MybatisDecryptInterceptor implements Interceptor {
         // 获取执行mysql执行结果
         Object result = invocation.proceed();
         if (result != null) {
-            MybatisMetaHelper.tryDealObject(result, MybatisMetaHelper::decryptObject);
+            MybatisMetaHelper.tryDealObject(result, object -> MybatisMetaHelper.decryptObject(object, mybatisPlusEncryptProperties.getEncryptKey()));
         }
         return result;
     }

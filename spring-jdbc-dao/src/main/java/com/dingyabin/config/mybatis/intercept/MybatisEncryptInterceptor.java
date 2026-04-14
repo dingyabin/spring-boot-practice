@@ -3,7 +3,7 @@ package com.dingyabin.config.mybatis.intercept;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.dingyabin.config.mybatis.MybatisMetaHelper;
-import lombok.AllArgsConstructor;
+import com.dingyabin.config.mybatis.MybatisPlusEncryptProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.plugin.Interceptor;
@@ -11,6 +11,7 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
 
+import javax.annotation.Resource;
 import java.sql.PreparedStatement;
 
 /**
@@ -25,8 +26,10 @@ import java.sql.PreparedStatement;
         method = "setParameters",
         args = {PreparedStatement.class})
 })
-@AllArgsConstructor
 public class MybatisEncryptInterceptor implements Interceptor {
+
+    @Resource
+    private MybatisPlusEncryptProperties mybatisPlusEncryptProperties;
 
 
     @Override
@@ -40,7 +43,7 @@ public class MybatisEncryptInterceptor implements Interceptor {
 
         //先加密入参
         if (ObjectUtil.isNotNull(parameterObject) && !ClassUtil.isSimpleValueType(parameterObject.getClass())) {
-            MybatisMetaHelper.tryDealObject(parameterObject, MybatisMetaHelper::encryptObject);
+            MybatisMetaHelper.tryDealObject(parameterObject, object -> MybatisMetaHelper.encryptObject(object, mybatisPlusEncryptProperties.getEncryptKey()));
         }
 
         //执行后续操作
@@ -48,7 +51,7 @@ public class MybatisEncryptInterceptor implements Interceptor {
 
         //再解密入参
         if (ObjectUtil.isNotNull(parameterObject) && !ClassUtil.isSimpleValueType(parameterObject.getClass())) {
-            MybatisMetaHelper.tryDealObject(parameterObject, MybatisMetaHelper::decryptObject);
+            MybatisMetaHelper.tryDealObject(parameterObject, object -> MybatisMetaHelper.decryptObject(object, mybatisPlusEncryptProperties.getEncryptKey()));
         }
 
         return proceed;

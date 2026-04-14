@@ -2,61 +2,72 @@ package com.dingyabin.config.mybatis;
 
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.dingyabin.config.annotation.EncryptField;
+import com.dingyabin.config.mybatis.intercept.MybatisDecryptInterceptor;
+import com.dingyabin.config.mybatis.intercept.MybatisEncryptInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
-
-@AutoConfiguration(after = MybatisPlusAutoConfiguration.class)
+@AutoConfiguration
+@ConditionalOnProperty(prefix = MybatisPlusEncryptProperties.ENCRYPT_PREFIX, name = "enable", havingValue = "true")
 public class MybatisPlusHelperConfiguration implements InitializingBean {
 
     private final MybatisPlusProperties properties;
+
 
     public MybatisPlusHelperConfiguration(MybatisPlusProperties properties) {
         this.properties = properties;
     }
 
-
-    @Override
-    public void afterPropertiesSet() {
-        List<TableInfo> tableInfos = TableInfoHelper.getTableInfos();
-        for (TableInfo tableInfo : tableInfos) {
-            findEncryptAnnotation(tableInfo);
-        }
-        String typeAliasesPackage = properties.getTypeAliasesPackage();
-        if (StringUtils.isNotEmpty(typeAliasesPackage)) {
-            String[] packagePatternArray = tokenizeToStringArray(typeAliasesPackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
-            Stream.of(packagePatternArray).forEach(packagePattern -> {
-                Set<Class<?>> classes = ClassUtil.scanPackage(packagePattern,
-                        clazz -> !clazz.isAnonymousClass() && !clazz.isInterface() && !clazz.isMemberClass());
-                classes.forEach(clazz -> {
-                    Arrays.stream(ReflectUtil.getFields(clazz)).forEach(field -> findEncryptAnnotation(field, clazz));
-                });
-            });
-        }
+    @Bean
+    public MybatisPlusEncryptProperties mybatisPlusEncryptProperties() {
+        return new MybatisPlusEncryptProperties();
     }
 
 
-    private static void findEncryptAnnotation(TableInfo tableInfo) {
-        Class<?> entityType = tableInfo.getEntityType();
-        for (TableFieldInfo fieldInfo : tableInfo.getFieldList()) {
-            findEncryptAnnotation(fieldInfo.getField(), entityType);
+    /**
+     * 加密组件
+     */
+    @Bean
+    public MybatisEncryptInterceptor mybatisEncryptInterceptor() {
+        return new MybatisEncryptInterceptor();
+    }
+
+
+    /**
+     * 解密组件
+     */
+    @Bean
+    public MybatisDecryptInterceptor mybatisDecryptInterceptor() {
+        return new MybatisDecryptInterceptor();
+    }
+
+
+    @Override
+    public void afterPropertiesSet() {
+        String typeAliasesPackage = properties.getTypeAliasesPackage();
+        if (StringUtils.isEmpty(typeAliasesPackage)) {
+            return;
         }
+        String[] packageArray = tokenizeToStringArray(typeAliasesPackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+        Stream.of(packageArray).forEach(pattern -> {
+            Set<Class<?>> clazzSet = ClassUtil.scanPackage(pattern, clazz -> !clazz.isAnonymousClass() && !clazz.isInterface() && !clazz.isMemberClass());
+            clazzSet.forEach(clazz -> {
+                Arrays.stream(ReflectUtil.getFields(clazz)).forEach(field -> findEncryptAnnotation(field, clazz));
+            });
+        });
     }
 
 

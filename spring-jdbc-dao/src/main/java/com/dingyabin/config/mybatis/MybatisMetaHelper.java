@@ -7,6 +7,7 @@ import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.dingyabin.config.annotation.EncryptField;
+import com.dingyabin.util.EncryptHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +20,6 @@ import java.util.function.Consumer;
 
 @Slf4j
 public class MybatisMetaHelper {
-
-    public static final String ENCODE_PREFIX = "#ENCODE#";
 
     private static final Map<Class<?>, Set<Pair<Field, EncryptField>>> ENCRYPT_FIELD_CACHE_MAP = new ConcurrentHashMap<>();
 
@@ -78,7 +77,7 @@ public class MybatisMetaHelper {
     /**
      * 字段值进行加密。通过字段的批注注册新的加密算法
      */
-    public static void encryptObject(Object object) {
+    public static void encryptObject(Object object, String key) {
         if (ObjectUtil.isNull(object)) {
             return;
         }
@@ -86,15 +85,14 @@ public class MybatisMetaHelper {
         if (CollectionUtils.isEmpty(encryptFields)) {
             return;
         }
-        for (Pair<Field, EncryptField> encryptField : encryptFields) {
+        for (Pair<Field, EncryptField> fieldPair : encryptFields) {
             try {
-                Field field = encryptField.getKey();
-                EncryptField encrypt = encryptField.getValue();
+                Field field = fieldPair.getKey();
                 Object fieldValue = ReflectUtil.getFieldValue(object, field);
                 if (Objects.isNull(fieldValue)) {
                     continue;
                 }
-                ReflectUtil.setFieldValue(object, field, ENCODE_PREFIX + Base64.encode(fieldValue.toString(), StandardCharsets.UTF_8));
+                ReflectUtil.setFieldValue(object, field, EncryptHelper.encrypt(fieldValue.toString(), key));
             } catch (Exception e) {
                 log.error("加密出错, object={}....", object.getClass(), e);
             }
@@ -105,7 +103,7 @@ public class MybatisMetaHelper {
     /**
      * 字段值进行解密。通过字段的批注注册新的解密算法
      */
-    public static void decryptObject(Object object) {
+    public static void decryptObject(Object object, String key) {
         if (ObjectUtil.isNull(object)) {
             return;
         }
@@ -113,20 +111,17 @@ public class MybatisMetaHelper {
         if (CollectionUtils.isEmpty(encryptFields)) {
             return;
         }
-        for (Pair<Field, EncryptField> encryptField : encryptFields) {
+        for (Pair<Field, EncryptField> fieldPair : encryptFields) {
             try {
-                Field field = encryptField.getKey();
-                EncryptField encrypt = encryptField.getValue();
+                Field field = fieldPair.getKey();
                 Object fieldValue = ReflectUtil.getFieldValue(object, field);
                 if (Objects.isNull(fieldValue)) {
                     continue;
                 }
-                String encodeStr = fieldValue.toString();
-                if (!encodeStr.startsWith(ENCODE_PREFIX)) {
-                    return;
+                String encrypt = fieldValue.toString();
+                if (EncryptHelper.isEncrypt(encrypt)) {
+                    ReflectUtil.setFieldValue(object, field, EncryptHelper.decrypt(encrypt, key));
                 }
-                encodeStr = StringUtils.substringAfter(encodeStr, ENCODE_PREFIX);
-                ReflectUtil.setFieldValue(object, field, Base64.decodeStr(encodeStr, StandardCharsets.UTF_8));
             } catch (Exception e) {
                 log.error("解密出错, object={}....", object.getClass(), e);
             }
