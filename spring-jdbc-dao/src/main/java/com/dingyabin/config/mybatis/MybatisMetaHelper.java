@@ -100,8 +100,14 @@ public class MybatisMetaHelper {
     }
 
 
+
     /**
-     * 字段值进行解密。通过字段的批注注册新的解密算法
+     * 对对象中的加密字段进行解密。
+     * 遍历对象中所有标记了 {@link EncryptField} 注解的字段，
+     * 如果字段值已被加密，则使用指定的密钥进行解密。
+     *
+     * @param object 待解密的对象
+     * @param key    解密密钥
      */
     public static void decryptObject(Object object, String key) {
         if (ObjectUtil.isNull(object)) {
