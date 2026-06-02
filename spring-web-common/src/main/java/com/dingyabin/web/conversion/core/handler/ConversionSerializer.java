@@ -69,7 +69,7 @@ public class ConversionSerializer extends JsonSerializer<Object> implements Cont
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
         Conversion convert = property.getAnnotation(Conversion.class);
         if (Objects.nonNull(convert)) {
-            return new ConversionSerializer(conversion);
+            return new ConversionSerializer(convert);
         }
         return prov.findValueSerializer(property.getType(), property);
     }
