@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -24,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Lion Li
  */
 @Slf4j
+@NoArgsConstructor
 public class ConversionSerializer extends JsonSerializer<Object> implements ContextualSerializer {
 
     /**
@@ -32,6 +34,10 @@ public class ConversionSerializer extends JsonSerializer<Object> implements Cont
     public static final Map<String, ConversionInterface<?>> TRANSLATION_MAPPER = new ConcurrentHashMap<>();
 
     private Conversion conversion;
+
+    public ConversionSerializer(Conversion conversion) {
+        this.conversion = conversion;
+    }
 
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
@@ -63,8 +69,7 @@ public class ConversionSerializer extends JsonSerializer<Object> implements Cont
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
         Conversion convert = property.getAnnotation(Conversion.class);
         if (Objects.nonNull(convert)) {
-            this.conversion = convert;
-            return this;
+            return new ConversionSerializer(conversion);
         }
         return prov.findValueSerializer(property.getType(), property);
     }
