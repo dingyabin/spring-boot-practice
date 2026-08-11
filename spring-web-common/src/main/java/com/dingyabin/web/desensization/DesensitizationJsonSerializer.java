@@ -16,6 +16,12 @@ public class DesensitizationJsonSerializer extends JsonSerializer<String> implem
 
     private DesensitizedTypeEnum desensitizedType;
 
+    public DesensitizationJsonSerializer() {
+    }
+
+    public DesensitizationJsonSerializer(DesensitizedTypeEnum desensitizedType) {
+        this.desensitizedType = desensitizedType;
+    }
 
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
@@ -28,8 +34,7 @@ public class DesensitizationJsonSerializer extends JsonSerializer<String> implem
         Desensitization desensitization = property.getAnnotation(Desensitization.class);
         JavaType type = property.getType();
         if (desensitization != null && String.class.equals(type.getRawClass())) {
-            this.desensitizedType = desensitization.value();
-            return this;
+            return new DesensitizationJsonSerializer(desensitization.value());
         }
         return prov.findValueSerializer(type, property);
     }
