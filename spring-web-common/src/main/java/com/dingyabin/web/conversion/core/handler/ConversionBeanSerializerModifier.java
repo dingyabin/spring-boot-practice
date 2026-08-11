@@ -1,5 +1,6 @@
 package com.dingyabin.web.conversion.core.handler;
 
+import com.dingyabin.web.conversion.annotation.Conversion;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
@@ -21,7 +22,7 @@ public class ConversionBeanSerializerModifier extends BeanSerializerModifier {
         for (BeanPropertyWriter writer : beanProperties) {
             // 如果序列化器为 ConversionSerializer 的话 将 Null 值也交给他处理
             JsonSerializer<Object> serializer = writer.getSerializer();
-            if (serializer instanceof ConversionSerializer) {
+            if (serializer instanceof ConversionSerializer || writer.getAnnotation(Conversion.class) != null) {
                 writer.assignNullSerializer(serializer);
             }
         }

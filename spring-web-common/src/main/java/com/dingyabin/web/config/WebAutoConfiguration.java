@@ -66,7 +66,7 @@ public class WebAutoConfiguration {
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
         javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(formatter));
         javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(formatter));
-        return builder -> builder.modulesToInstall(javaTimeModule);
+        return builder -> builder.modulesToInstall(modules ->  modules.add(javaTimeModule));
     }
 
 }

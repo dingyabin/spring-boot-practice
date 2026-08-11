@@ -42,6 +42,10 @@ public class PropertyWriterConfig {
                 if (dynamicPropertyResolver == null && !propertyModel.resolverBeanClass().equals(DynamicPropertyResolverInterface.class)){
                     dynamicPropertyResolver = SpringUtil.getBean(propertyModel.resolverBeanClass());
                 }
+                //没找到dynamicPropertyResolver， 直接返回
+                if (dynamicPropertyResolver == null) {
+                    return beanProperties;
+                }
                 //替换成包装类
                 List<BeanPropertyWriter> list = new ArrayList<>(beanProperties.size());
                 for (BeanPropertyWriter beanProperty : beanProperties) {
@@ -52,7 +56,7 @@ public class PropertyWriterConfig {
                 return list;
             }
         });
-        return builder -> builder.modulesToInstall(simpleModule);
+        return builder -> builder.modulesToInstall(modules -> modules.add(simpleModule));
     }
 
 }

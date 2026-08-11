@@ -42,7 +42,7 @@ public class ConversionConfig {
         //注册BeanSerializerModifier
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.setSerializerModifier(new ConversionBeanSerializerModifier());
-        return builder -> builder.modulesToInstall(simpleModule);
+        return builder -> builder.modulesToInstall(modules -> modules.add(simpleModule));
     }
 
 }
