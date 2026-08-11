@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.dingyabin.web.config.WebAutoConfiguration,\
 com.dingyabin.web.conversion.config.ConversionConfig,\
+com.dingyabin.web.dynamic.config.PropertyWriterConfig,\
 com.dingyabin.web.conversion.core.impl.UserNameTranslationImpl
