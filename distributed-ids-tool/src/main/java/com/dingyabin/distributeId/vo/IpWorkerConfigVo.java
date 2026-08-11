@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 
 @Data
-@DynamicPropertyModel
+@DynamicPropertyModel(resolverBeanClass = TestDynamicPropertyResolver.class)
 public class IpWorkerConfigVo implements Serializable {
     /**
      * 
