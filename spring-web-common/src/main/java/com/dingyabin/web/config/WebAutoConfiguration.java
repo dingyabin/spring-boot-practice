@@ -57,15 +57,17 @@ public class WebAutoConfiguration {
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer javaTimeModule() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern);
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(formatter));
-        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(formatter));
+        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern(datePattern);
+        DateTimeFormatter localTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
-        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(formatter));
-        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(formatter));
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(localDateTimeFormatter));
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_LOCAL_DATE));
+        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(localTimeFormatter));
+
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(localDateTimeFormatter));
+        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ISO_LOCAL_DATE));
+        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(localTimeFormatter));
         return builder -> builder.modulesToInstall(modules ->  modules.add(javaTimeModule));
     }
 
