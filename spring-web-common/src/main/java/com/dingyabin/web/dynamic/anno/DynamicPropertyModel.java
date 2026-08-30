@@ -31,7 +31,7 @@ public @interface DynamicPropertyModel {
             }
         },
         /**
-         * 标有注解的字段
+         *  标有注解的字段
          */
         WITH_ANNOTATION() {
             @Override
