@@ -1,6 +1,5 @@
 package com.dingyabin.web.conversion.core.impl;
 
-import com.dingyabin.web.conversion.annotation.ConversionType;
 import com.dingyabin.web.conversion.core.ConversionInterface;
 import lombok.AllArgsConstructor;
 
@@ -10,8 +9,13 @@ import lombok.AllArgsConstructor;
  * @author Lion Li
  */
 @AllArgsConstructor
-@ConversionType(type = "test")
 public class UserNameTranslationImpl implements ConversionInterface<String> {
+
+
+    @Override
+    public String conversionType() {
+        return "test";
+    }
 
 
     @Override

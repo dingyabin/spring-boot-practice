@@ -1,5 +1,6 @@
 package com.dingyabin.web.conversion.annotation;
 
+import com.dingyabin.web.conversion.core.ConversionInterface;
 import com.dingyabin.web.conversion.core.handler.ConversionSerializer;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -20,7 +21,7 @@ import java.lang.annotation.*;
 public @interface Conversion {
 
     /**
-     * 类型 (需与实现类的 {@link ConversionType} 注解type对应)
+     * 类型 (需与实现类的 {@link ConversionInterface#conversionType()} type对应)
      * <p>
      * 默认取当前字段的值 如果设置了 @{@link Conversion#mapper()} 则取映射字段的值
      */
