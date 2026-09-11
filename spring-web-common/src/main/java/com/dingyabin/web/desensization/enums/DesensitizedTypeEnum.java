@@ -45,7 +45,7 @@ public enum DesensitizedTypeEnum {
     BANK_CARD(DesensitizedUtil::bankCard);
 
 
-    private Function<String, String> desensitize;
+    private final Function<String, String> desensitize;
 
 
     DesensitizedTypeEnum(Function<String, String> desensitize) {

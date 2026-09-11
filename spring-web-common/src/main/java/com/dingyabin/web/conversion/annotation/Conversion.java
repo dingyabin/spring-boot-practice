@@ -1,7 +1,7 @@
 package com.dingyabin.web.conversion.annotation;
 
 import com.dingyabin.web.conversion.core.ConversionInterface;
-import com.dingyabin.web.conversion.core.handler.ConversionSerializer;
+import com.dingyabin.web.conversion.core.serializer.ConversionSerializer;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
