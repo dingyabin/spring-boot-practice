@@ -1,9 +1,11 @@
 package com.dingyabin.utils.enums;
 
+import org.apache.commons.lang3.EnumUtils;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class EnumUtils {
+public class EnumUtil {
 
     // 缓存 Key: 枚举Class, Value: Map<Code, 枚举实例>
     private static final Map<Class<?>, Map<Object, Enum<?>>> ENUM_CACHE = new ConcurrentHashMap<>();
@@ -15,13 +17,9 @@ public class EnumUtils {
             return null;
         }
         // 获取或创建该枚举类型的 Code映射表
-        Map<Object, Enum<?>> cache = ENUM_CACHE.computeIfAbsent(enumType, k -> {
-            Map<Object, Enum<?>> map = new ConcurrentHashMap<>();
-            for (E e : enumType.getEnumConstants()) {
-                map.put(e.getCode(), e);
-            }
-            return map;
-        });
+        Map<Object, Enum<?>> cache = ENUM_CACHE.computeIfAbsent(enumType, k ->
+                new ConcurrentHashMap<>(EnumUtils.getEnumMap(enumType, BaseEnum::getCode))
+        );
         return (E) cache.get(code);
     }
 
